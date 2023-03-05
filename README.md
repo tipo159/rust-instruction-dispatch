@@ -25,16 +25,16 @@ Also, the implementations of Direct Threading and Optimized Direct Threading in 
 After downloading this project, build it with the following commands.
 
 ```console
-> (cd Rust/switch-dispatch; cargo build --release)
-> (cd Rust/direct-call-threading; cargo build --release)
-> (cd Rust/direct-tail-call-threading; cargo build --release)
-> (cd Rust/direct-threading; cargo build --release)
-> (cd Rust/optimized-direct-threading; cargo build --release)
-> (cd C/switch-dispatch; make)
-> (cd C/direct-call-threading; make)
-> (cd C/direct-tail-call-threading; make)
-> (cd C/direct-threading; make)
-> (cd C/optimized-direct-threading; make)
+(cd Rust/switch-dispatch; cargo build --release)
+(cd Rust/direct-call-threading; cargo build --release)
+（cd Rust/direct-tail-call-threading; cargo build --release)
+(cd Rust/direct-threading; cargo build --release)
+(cd Rust/optimized-direct-threading; cargo build --release)
+(cd C/switch-dispatch; make)
+(cd C/direct-call-threading; make)
+(cd C/direct-tail-call-threading; make)
+(cd C/direct-threading; make)
+(cd C/optimized-direct-threading; make)
 ```
 
 ## Usage
@@ -42,16 +42,16 @@ After downloading this project, build it with the following commands.
 After building, you can measure the performance of each type of instruction dispatch with the following commands.
 
 ```console
-> (cd Rust/switch-dispatch; cargo run --release)
-> (cd Rust/direct-call-threading; cargo run --release)
-> (cd Rust/direct-tail-call-threading; cargo run --release)
-> (cd Rust/direct-threading; cargo run --release)
-> (cd Rust/optimized-direct-threading; cargo run --release)
-> C/switch-dispatch/switch-dispatch
-> C/direct-call-threading/direct-call-threading
-> C/direct-tail-call-threading/direct-tail-call-threading
-> C/direct-threading/direct-threading
-> C/optimized-direct-threading/optimized-direct-threading
+(cd Rust/switch-dispatch; cargo run --release)
+(cd Rust/direct-call-threading; cargo run --release)
+(cd Rust/direct-tail-call-threading; cargo run --release)
+(cd Rust/direct-threading; cargo run --release)
+(cd Rust/optimized-direct-threading; cargo run --release)
+C/switch-dispatch/switch-dispatch
+C/direct-call-threading/direct-call-threading
+C/direct-tail-call-threading/direct-tail-call-threading
+C/direct-threading/direct-threading
+C/optimized-direct-threading/optimized-direct-threading
 ```
 
 The output example for "(cd Rust/switch-dispatch; cargo run --release)" is as follows.
@@ -71,11 +71,11 @@ Average of 100 results:    3916145 ns
 Programs written in Rust can also run cargo criterion.
 
 ```console
-> (cd Rust/switch-dispatch; cargo criterion)
-> (cd Rust/direct-call-threading; cargo criterion)
-> (cd Rust/direct-tail-call-threading; cargo criterion)
-> (cd Rust/direct-threading; cargo criterion)
-> (cd Rust/optimized-direct-threading; cargo criterion)
+(cd Rust/switch-dispatch; cargo criterion)
+(cd Rust/direct-call-threading; cargo criterion)
+(cd Rust/direct-tail-call-threading; cargo criterion)
+(cd Rust/direct-threading; cargo criterion)
+(cd Rust/optimized-direct-threading; cargo criterion)
 ```
 
 To run cargo criterion, you must install cargo-criterion as follows.
@@ -100,11 +100,11 @@ test bytecode::test_get_opcode ... ignored
 In addition, programs written in Rust can be run with the dev profile to output debugging information.
 
 ```console
-> (cd Rust/switch-dispatch; cargo run)
-> (cd Rust/direct-call-threading; cargo run)
-> (cd Rust/direct-tail-call-threading; cargo run)
-> (cd Rust/direct-threading; cargo run)
-> (cd Rust/optimized-direct-threading; cargo run)
+(cd Rust/switch-dispatch; cargo run)
+(cd Rust/direct-call-threading; cargo run)
+(cd Rust/direct-tail-call-threading; cargo run)
+(cd Rust/direct-threading; cargo run)
+(cd Rust/optimized-direct-threading; cargo run)
 ```
 
 The output example for "(cd Rust/switch-dispatch; cargo run)" is as follows.
