@@ -147,11 +147,11 @@ In switch dispatch, each bytecode instruction is mapped to a case label in a swi
 
 ### Direct Call Threading
 
-In direct call threading, each bytecode instruction is translated into a native call instruction to an instruction implementation function.
+In direct call threading, each bytecode instruction is translated into a function pointer to an instruction implementation function.
 
 ### Direct Tail Call Threading
 
-In direct call threading,  each bytecode instruction is translated into a native call instruction to an instruction implementation function. The return from each function and the next function call are tail-call optimized.
+In direct call threading,  each bytecode instruction is translated into a function pointer to an instruction implementation function. The return from each function and the next function call are tail-call optimized.
 
 This technique is mentioned in "Direct tail-call threading in Rust[5]”.
 
