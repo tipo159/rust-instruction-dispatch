@@ -47,11 +47,11 @@ After building, you can measure the performance of each type of instruction disp
 (cd Rust/direct-tail-call-threading; cargo run --release)
 (cd Rust/direct-threading; cargo run --release)
 (cd Rust/optimized-direct-threading; cargo run --release)
-C/switch-dispatch/switch-dispatch
-C/direct-call-threading/direct-call-threading
-C/direct-tail-call-threading/direct-tail-call-threading
-C/direct-threading/direct-threading
-C/optimized-direct-threading/optimized-direct-threading
+C/switch-dispatch/switch_dispatch
+C/direct-call-threading/direct_call_threading
+C/direct-tail-call-threading/direct_tail_call_threading
+C/direct-threading/direct_threading
+C/optimized-direct-threading/optimized_direct_threading
 ```
 
 The output example for "(cd Rust/switch-dispatch; cargo run --release)" is as follows.
