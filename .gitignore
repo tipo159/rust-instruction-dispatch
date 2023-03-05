@@ -36,3 +36,6 @@ direct_tail_call_threading.plist
 direct_threading.plist
 optimized_direct_threading.plist
 switch_dispatch.plist
+
+# Apple Desktop Services Store
+.DS_Store
