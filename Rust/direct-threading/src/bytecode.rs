@@ -25,15 +25,45 @@ macro_rules! label_addr {
     )
 }
 
+#[cfg(target_arch = "x86_64")]
+macro_rules! label_addr {
+    ($name:expr) => (
+        {
+            let addr: usize;
+            unsafe {
+                asm!(
+                    concat!("leaq ", $name, "(%rip), {addr}"),
+                    addr = out(reg) addr,
+                );
+            }
+            addr
+        }
+    )
+}
+
 /// Macro to dispatch based on jump table and opcode. Aarch64 Only.
 #[cfg(target_arch = "aarch64")]
 macro_rules! dispatch {
     ($opcode:expr, $jump_table:expr) => {
         let addr = $jump_table[$opcode as usize];
         asm!(
-            "br {}",
-            in(reg) addr,
+            "br {addr}",
+            addr = in(reg) addr,
         );
+    }
+}
+
+#[cfg(target_arch = "x86_64")]
+macro_rules! dispatch {
+    ($opcode:expr, $jump_table:expr) => {
+        let addr = $jump_table[$opcode as usize];
+
+        unsafe {
+            asm!(
+                "jmpq *{addr}",
+                addr = in(reg) addr,
+            );
+        }
     }
 }
 
