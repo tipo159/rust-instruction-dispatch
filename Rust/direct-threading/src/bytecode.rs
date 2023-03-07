@@ -16,26 +16,10 @@ macro_rules! label_addr {
         {
             let addr: usize;
             asm!(
-                concat!("adrp   {addr}, ", $name, "@PAGE"),
-                concat!("add    {addr}, {addr}, ", $name, "@PAGEOFF"),
-                addr = out(reg) addr,
+                concat!("adrp   {addr_reg}, ", $name, "@PAGE"),
+                concat!("add    {addr_reg}, {addr_reg}, ", $name, "@PAGEOFF"),
+                addr_reg = out(reg) addr,
             );
-            addr
-        }
-    )
-}
-
-#[cfg(target_arch = "x86_64")]
-macro_rules! label_addr {
-    ($name:expr) => (
-        {
-            let addr: usize;
-            unsafe {
-                asm!(
-                    concat!("leaq ", $name, "(%rip), {addr}"),
-                    addr = out(reg) addr,
-                );
-            }
             addr
         }
     )
@@ -47,23 +31,9 @@ macro_rules! dispatch {
     ($opcode:expr, $jump_table:expr) => {
         let addr = $jump_table[$opcode as usize];
         asm!(
-            "br {addr}",
-            addr = in(reg) addr,
+            "br {addr_reg}",
+            addr_reg = in(reg) addr,
         );
-    }
-}
-
-#[cfg(target_arch = "x86_64")]
-macro_rules! dispatch {
-    ($opcode:expr, $jump_table:expr) => {
-        let addr = $jump_table[$opcode as usize];
-
-        unsafe {
-            asm!(
-                "jmpq *{addr}",
-                addr = in(reg) addr,
-            );
-        }
     }
 }
 
