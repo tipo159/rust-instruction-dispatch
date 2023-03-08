@@ -249,6 +249,16 @@ Add memory location 0 by 1 from 0 to 1,048,575(0xfffff).
 
 Measured on MacBook Pro 13" 2020 (Apple M1)
 
+| Threading Techniques       | Rust criterion (msec) | Rust Average of 100 runs (nanosec) | C Average of 100 runs (nanosec) |
+| :------------------------- | -------------: | -----------------------: | --------------------: |
+| Switch dispatch            |         7.6682 |                6,025,179 |             6,825,759 |
+| Direct call threading      |         9.7546 |                6,582,182 |             7,998,624 |
+| Direct tail call threading |         3.8759 |                3,430,561 |             3,473,483 |
+| Direct threading           |             -  |                        - |                 1,074 |
+| Optimized Direct threading |             -  |                        - |                   895 |
+
+Measured on DELL-inspiron 15 3000 2019 (Intel Core i7-1065G7)
+
 ## References
 
 [1] 2022. Writing Interpreters in Rust: a Guide. Retrieved from <https://rust-hosted-langs.github.io/book/>.
