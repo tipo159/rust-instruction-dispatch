@@ -18,3 +18,5 @@ path = "src/lib.rs"
 default = ["unchecked_memory"]
 unchecked_memory = []
 
+[dependencies]
+once_cell = "1.17.1"
