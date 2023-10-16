@@ -4,7 +4,7 @@
 #define WARMING_UP_ITERATIONS 10
 #define NUM_OF_ITERATIONS 100
 
-#define DISPATCH() goto *dispatch_table[GET_OPCODE(program[pc++])]
+#define DISPATCH() goto *dispatch_table[GET_OPCODE(program[++pc])]
 
 typedef enum
 {
@@ -72,7 +72,7 @@ int main()
         }
         clock_gettime(CLOCK_MONOTONIC_RAW, &ts_start);
         pc = 0;
-        DISPATCH();
+	goto *dispatch_table[GET_OPCODE(program[pc])];
     do_load:
         memory[GET_OPERAND_A(program[pc])] = GET_OPERAND_IMM(program[pc]);
         DISPATCH();
