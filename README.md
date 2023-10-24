@@ -27,7 +27,7 @@ After downloading this project, build it with the following commands.
 ```console
 (cd Rust/switch-dispatch; cargo build --release)
 (cd Rust/direct-call-threading; cargo build --release)
-（cd Rust/direct-tail-call-threading; cargo build --release)
+(cd Rust/direct-tail-call-threading; cargo build --release)
 (cd Rust/direct-threading; cargo build --release)
 (cd Rust/optimized-direct-threading; cargo build --release)
 (cd C/switch-dispatch; make)
