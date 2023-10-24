@@ -239,6 +239,8 @@ Add memory location 0 by 1 from 0 to 1,048,575(0xfffff).
 
 ## Performance Comparison
 
+### Aarch64
+
 | Threading Techniques       | Rust criterion (msec) | Rust Average of 100 runs (nanosec) | C Average of 100 runs (nanosec) |
 | :------------------------- | -------------: | -----------------------: | --------------------: |
 | Switch dispatch            |         3.8509 |                3,916,145 |             3,865,595 |
@@ -248,6 +250,8 @@ Add memory location 0 by 1 from 0 to 1,048,575(0xfffff).
 | Optimized Direct threading |        12.829  |               13,066,978 |                   627 |
 
 Measured on MacBook Pro 13" 2020 (Apple M1)
+
+### x86_64
 
 | Threading Techniques       | Rust criterion (msec) | Rust Average of 100 runs (nanosec) | C Average of 100 runs (nanosec) |
 | :------------------------- | -------------: | -----------------------: | --------------------: |
