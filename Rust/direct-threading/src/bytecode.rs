@@ -37,6 +37,33 @@ macro_rules! dispatch {
     }
 }
 
+/// Macro to get the label address. x86_64 Only.
+#[cfg(target_arch = "x86_64")]
+macro_rules! label_addr {
+    ($name:literal) => (
+        {
+            let addr: usize;
+            asm!(
+                concat!("lea    {},", $name, "[rip]"),
+                out(reg) addr,
+            );
+            addr
+        }
+    )
+}
+
+/// Macro to dispatch based on jump table and opcode. x86_64 Only.
+#[cfg(target_arch = "x86_64")]
+macro_rules! dispatch {
+    ($pc:expr, $dispatch_sequence:expr) => {
+        let addr = $dispatch_sequence[$pc as usize];
+        asm!(
+            "jmp {}",
+            in(reg) addr,
+        );
+    }
+}
+
 /// Type for Bytecode
 pub type Bytecode = u32;
 
