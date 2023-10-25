@@ -6,6 +6,7 @@ ASM = $(TARGET).s
 
 ANALYZE = $(TARGET).plist
 
+CC=clang
 CFLAGS = -Ofast
 
 all:	$(TARGET)
