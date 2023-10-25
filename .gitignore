@@ -16,20 +16,6 @@ Cargo.lock
 **/optimized_direct_threading
 **/switch_dispatch
 
-# llvm IR files in C
-**/direct_call_threading.ll
-**/direct_tail_call_threading.ll
-**/direct_threading.ll
-**/optimized_direct_threading.ll
-**/switch_dispatch.ll
-
-# assembly files in C
-**/direct_call_threading.s
-**/direct_tail_call_threading.s
-**/direct_threading.s
-**/optimized_direct_threading.s
-**/switch_dispatch.s
-
 # clang analyzer output files in C
 **/direct_call_threading.plist
 **/direct_tail_call_threading.plist
