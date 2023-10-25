@@ -1,8 +1,13 @@
 #include <stdio.h>
 #include <time.h>
 
+#ifdef DEBUG
+#define WARMING_UP_ITERATIONS 0
+#define NUM_OF_ITERATIONS 1
+#else
 #define WARMING_UP_ITERATIONS 10
 #define NUM_OF_ITERATIONS 100
+#endif
 
 #define DISPATCH() goto *dispatch_table[GET_OPCODE(program[++pc])]
 
@@ -49,7 +54,11 @@ int main()
         // Init loop
         MAKE_OPCODE_IMM(OP_LOAD, 0, 0),
         MAKE_OPCODE_IMM(OP_LOAD, 1, 1),
+#ifdef DEBUG
+        MAKE_OPCODE_IMM(OP_LOAD, 2, 10),
+#else
         MAKE_OPCODE_IMM(OP_LOAD, 2, 0xfffff),
+#endif
         // Loop
         MAKE_OPCODE_A_B_C(OP_ADD, 0, 0, 1),
         MAKE_OPCODE_A_B_JMP(OP_JMPNE, 0, 2, 3),
@@ -75,11 +84,23 @@ int main()
         goto *dispatch_table[GET_OPCODE(program[pc])];
     do_load:
         memory[GET_OPERAND_A(program[pc])] = GET_OPERAND_IMM(program[pc]);
+#ifdef DEBUG
+        printf("%d: load memory[%d] = %d\n", pc, GET_OPERAND_A(program[pc]), GET_OPERAND_IMM(program[pc]));
+#endif
         DISPATCH();
     do_add:
         memory[GET_OPERAND_A(program[pc])] = memory[GET_OPERAND_B(program[pc])] + memory[GET_OPERAND_C(program[pc])];
+#ifdef DEBUG
+        printf("%d: add memory[%d](%d) = memory[%d] + memory[%d]\n", pc, GET_OPERAND_A(program[pc]),
+            memory[GET_OPERAND_A(program[pc])], GET_OPERAND_B(program[pc]), GET_OPERAND_C(program[pc]));
+#endif
         DISPATCH();
     do_jmpne:
+#ifdef DEBUG
+        printf("%d: jmpne if memory[%d](%d) != memory[%d](%d) then pc = %d\n", pc, GET_OPERAND_A(program[pc]),
+            memory[GET_OPERAND_A(program[pc])], GET_OPERAND_B(program[pc]), memory[GET_OPERAND_B(program[pc])],
+            GET_OPERAND_JMP(program[pc]));
+#endif
         if (memory[GET_OPERAND_A(program[pc])] != memory[GET_OPERAND_B(program[pc])])
         {
             pc = GET_OPERAND_JMP(program[pc]) - 1;
@@ -87,8 +108,14 @@ int main()
         DISPATCH();
     do_print:
         printf("%d\n", memory[GET_OPERAND_A(program[pc])]);
+#ifdef DEBUG
+        printf("%d: print memory[%d](%d)\n", pc, GET_OPERAND_A(program[pc]), memory[GET_OPERAND_A(program[pc])]);
+#endif
         DISPATCH();
     do_ret:
+#ifdef DEBUG
+        printf("%d: ret\n", pc);
+#endif
         clock_gettime(CLOCK_MONOTONIC_RAW, &ts_end);
         average += (ts_end.tv_sec - ts_start.tv_sec) * 1000000000 + ts_end.tv_nsec - ts_start.tv_nsec;
         printf("Time elapsed: %10ld ns\n",
