@@ -9,7 +9,7 @@
 #define NUM_OF_ITERATIONS 100
 #endif
 
-#define DISPATCH() goto *dispatch_table[GET_OPCODE(program[++pc])]
+#define DISPATCH() goto *dispatch_table[GET_OPCODE(*(++pp))]
 
 typedef enum
 {
@@ -68,7 +68,7 @@ int main()
         MAKE_OPCODE(OP_RET)};
     void *dispatch_table[] = {&&do_load, &&do_add, &&do_jmpne, &&do_print,
                               &&do_ret};
-    int pc;
+    bytecode_t *pp = &program[0];
     int memory[256] = {0};
     struct timespec ts_start, ts_end;
 
@@ -80,41 +80,39 @@ int main()
             average = 0;
         }
         clock_gettime(CLOCK_MONOTONIC_RAW, &ts_start);
-        pc = 0;
-        goto *dispatch_table[GET_OPCODE(program[pc])];
+        goto *dispatch_table[GET_OPCODE(*pp)];
     do_load:
-        memory[GET_OPERAND_A(program[pc])] = GET_OPERAND_IMM(program[pc]);
 #ifdef DEBUG
-        printf("%d: load memory[%d] = %d\n", pc, GET_OPERAND_A(program[pc]), GET_OPERAND_IMM(program[pc]));
+        printf("%ld: load memory[%d] = %d\n", pp - &program[0], GET_OPERAND_A(*pp), GET_OPERAND_IMM(*pp));
 #endif
+        memory[GET_OPERAND_A(*pp)] = GET_OPERAND_IMM(*pp);
         DISPATCH();
     do_add:
-        memory[GET_OPERAND_A(program[pc])] = memory[GET_OPERAND_B(program[pc])] + memory[GET_OPERAND_C(program[pc])];
 #ifdef DEBUG
-        printf("%d: add memory[%d](%d) = memory[%d] + memory[%d]\n", pc, GET_OPERAND_A(program[pc]),
-            memory[GET_OPERAND_A(program[pc])], GET_OPERAND_B(program[pc]), GET_OPERAND_C(program[pc]));
+        printf("%ld: add memory[%d](%d) = memory[%d] + memory[%d]\n", pp - &program[0], GET_OPERAND_A(*pp),
+            memory[GET_OPERAND_A(*pp)], GET_OPERAND_B(*pp), GET_OPERAND_C(*pp));
 #endif
+        memory[GET_OPERAND_A(*pp)] = memory[GET_OPERAND_B(*pp)] + memory[GET_OPERAND_C(*pp)];
         DISPATCH();
     do_jmpne:
 #ifdef DEBUG
-        printf("%d: jmpne if memory[%d](%d) != memory[%d](%d) then pc = %d\n", pc, GET_OPERAND_A(program[pc]),
-            memory[GET_OPERAND_A(program[pc])], GET_OPERAND_B(program[pc]), memory[GET_OPERAND_B(program[pc])],
-            GET_OPERAND_JMP(program[pc]));
+        printf("%ld: jmpne if memory[%d](%d) != memory[%d](%d) then pp = %d\n", pp - &program[0], GET_OPERAND_A(*pp),
+            memory[GET_OPERAND_A(*pp)], GET_OPERAND_B(*pp), memory[GET_OPERAND_B(*pp)], GET_OPERAND_JMP(*pp));
 #endif
-        if (memory[GET_OPERAND_A(program[pc])] != memory[GET_OPERAND_B(program[pc])])
+        if (memory[GET_OPERAND_A(*pp)] != memory[GET_OPERAND_B(*pp)])
         {
-            pc = GET_OPERAND_JMP(program[pc]) - 1;
+            pp = &program[GET_OPERAND_JMP(*pp) - 1];
         }
         DISPATCH();
     do_print:
-        printf("%d\n", memory[GET_OPERAND_A(program[pc])]);
 #ifdef DEBUG
-        printf("%d: print memory[%d](%d)\n", pc, GET_OPERAND_A(program[pc]), memory[GET_OPERAND_A(program[pc])]);
+        printf("%ld: print memory[%d](%d)\n", pp - &program[0], GET_OPERAND_A(*pp), memory[GET_OPERAND_A(*pp)]);
 #endif
+        printf("%d\n", memory[GET_OPERAND_A(*pp)]);
         DISPATCH();
     do_ret:
 #ifdef DEBUG
-        printf("%d: ret\n", pc);
+        printf("%ld: ret\n", pp - &program[0]);
 #endif
         clock_gettime(CLOCK_MONOTONIC_RAW, &ts_end);
         average += (ts_end.tv_sec - ts_start.tv_sec) * 1000000000 + ts_end.tv_nsec - ts_start.tv_nsec;
