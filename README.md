@@ -10,7 +10,7 @@ This is a project to learn how to implement instruction dispatch in Rust. Instru
 
 "Writing Interpreters in Rust: a Guide[^1]" says this about "Instruction dispatch" in "4.8 Virtual Machine: Architecture and Design"
 
-[^1:] 2022. Writing Interpreters in Rust: a Guide. Retrieved from <https://rust-hosted-langs.github.io/book/>.
+[^1]: 2022. Writing Interpreters in Rust: a Guide. Retrieved from <https://rust-hosted-langs.github.io/book/>.
 
 > Prior research[^2] into implementing dispatch in Rust concludes that simple switch-style dispatch is
 > the only cross-platform construct we can reasonably make use of. Other mechanisms come with
