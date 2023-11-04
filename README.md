@@ -20,7 +20,7 @@ In my environment (MacBook Pro 13" 2020 Apple M1), Direct Tail Call Threading wa
 
 This project is written in Rust and C. To install Rust, please refer to [here](https://www.rust-lang.org/tools/install).
 
-Also, the implementations of Direct Threading and Optimized Direct Threading in Rust are for Aarch64 only. If you want to support other architectures, you need to rewrite the inline assembly in the source code.
+Also, the implementations of Direct Threading and Optimized Direct Threading in Rust are for Aarch64 and x86_64. If you want to support other architectures, you need to rewrite the inline assembly in the source code.
 
 After downloading this project, build it with the following commands.
 
@@ -34,7 +34,6 @@ After downloading this project, build it with the following commands.
 (cd C/direct-call-threading; make)
 (cd C/direct-tail-call-threading; make)
 (cd C/direct-threading; make)
-(cd C/optimized-direct-threading; make)
 ```
 
 ## Usage
@@ -51,7 +50,6 @@ C/switch-dispatch/switch_dispatch
 C/direct-call-threading/direct_call_threading
 C/direct-tail-call-threading/direct_tail_call_threading
 C/direct-threading/direct_threading
-C/optimized-direct-threading/optimized_direct_threading
 ```
 
 The output example for "(cd Rust/switch-dispatch; cargo run --release)" is as follows.
@@ -177,15 +175,15 @@ Like direct threading, my program is an Aarch64-only implementation, with the re
 
 | Threading Techniques       | Pros                            | Cons                                   |
 | :------------------------- | :------------------------------ | :------------------------------------- |
-| Switch dispatch            | Simple                          | High dispatch overhead                 |
+| Switch Dispatch            | Simple                          | High dispatch overhead                 |
 |                            | Portable                        | Poor instruction caching               |
-| Direct call threading      | Reduce dispatch overhead        | Conversion to internal format          |
+| Direct Call Threading      | Reduce dispatch overhead        | Conversion to internal format          |
 |                            | Portable                        | Function call overhead                 |
 |                            |                                 | Function return overhead               |
-| Direct tail call threading | Reduce dispatch overhead        | Conversion to internal format          |
+| Direct Tail Call Threading | Reduce dispatch overhead        | Conversion to internal format          |
 |                            | Remove function return overhead | Function call overhead                 |
 |                            | Portable                        | Tail call isn't optimized in dev profile |
-| Direct threading           | Reduce dispatch overhead        | Require compiler support               |
+| Direct Threading           | Reduce dispatch overhead        | Require compiler support               |
 |                            | Improve instruction caching     | Indirect jump overhead (2 times)       |
 | Optimized Direct threading | Reduce dispatch overhead        | Require compiler support               |
 |                            | Improve instruction caching     | Indirect jump overhead (1 time)        |
@@ -241,27 +239,57 @@ Add memory location 0 by 1 from 0 to 1,048,575(0xfffff).
 
 ### Aarch64
 
+#### rustc 1.73.0 on Aarch64
+
 | Threading Techniques       | Rust criterion (msec) | Rust Average of 100 runs (nanosec) | C Average of 100 runs (nanosec) |
 | :------------------------- | -------------: | -----------------------: | --------------------: |
-| Switch dispatch            |         3.8509 |                3,916,145 |             3,865,595 |
-| Direct call threading      |         7.4248 |                7,923,624 |             6,831,052 |
-| Direct tail call threading |         2.4223 |                2,429,428 |             2,618,682 |
-| Direct threading           |        17.583  |               19,134,075 |                 1,561 |
-| Optimized Direct threading |        12.829  |               13,066,978 |                   627 |
+| Switch Dispatch            |         3.5685 |                3,503,852 |             3,455,825 |
+| Direct Call Threading      |         6.9213 |                6,852,853 |             6,303,675 |
+| Direct Tail Call Threading |         2.3721 |                2,429,894 |             2,368,041 |
+| Direct Threading           |          -[^1] |                    -[^1] |                    36 |
+| Optimized Direct Threading |          -[^1] |                    -[^1] |                     - |
 
-Measured on MacBook Pro 13" 2020 (Apple M1)
+[^1]: compile error: invalid CFI advance_loc expression
+
+Measured on MacBook Pro 13" 2020 (Apple M1) with rustc 1.73.0 and clang 17.0.3
+
+#### rustc 1.72.1 on Aarch64
+
+| Threading Techniques       | Rust criterion (msec) | Rust Average of 100 runs (nanosec) | C Average of 100 runs (nanosec) |
+| :------------------------- | -------------: | -----------------------: | --------------------: |
+| Switch Dispatch            |         3.5174 |                3,511,867 |             3,597,721 |
+| Direct Call Threading      |         6.8308 |                6,768,575 |             6,490,491 |
+| Direct Tail Call Threading |         2.2993 |                2,379,756 |             2,456,201 |
+| Direct Threading           |        16.194  |               15,870,563 |                    34 |
+| Optimized Direct Threading |        12.984  |               12,069,665 |                     - |
+
+Measured on MacBook Pro 13" 2020 (Apple M1) with rustc 1.72.1 and clang-1500.0.40.1
 
 ### x86_64
 
+#### rustc 1.73.0 on x86_64
+
 | Threading Techniques       | Rust criterion (msec) | Rust Average of 100 runs (nanosec) | C Average of 100 runs (nanosec) |
 | :------------------------- | -------------: | -----------------------: | --------------------: |
-| Switch dispatch            |         7.6682 |                6,025,179 |             6,825,759 |
-| Direct call threading      |         9.7546 |                6,582,182 |             7,998,624 |
-| Direct tail call threading |         3.8759 |                3,430,561 |             3,473,483 |
-| Direct threading           |             -  |                        - |                 1,074 |
-| Optimized Direct threading |             -  |                        - |                   895 |
+| Switch Dispatch            |         5.8844 |                5,543,414 |            13,251,234 |
+| Direct Call Threading      |         6.3693 |                4,826,650 |            18,263,882 |
+| Direct Tail Call Threading |         2.8581 |                2,694,275 |             6,496,336 |
+| Direct Threading           |        32.117  |               23,723,130 |                    43 |
+| Optimized Direct Threading |        13.769  |               27,872,318 |                     - |
 
-Measured on DELL-inspiron 15 3000 2019 (Intel Core i7-1065G7)
+Measured on DELL-inspiron 15 3000 2019 (Intel Core i7-1065G7) with rustc 1.73.0 and clang 15.0.7
+
+#### rustc 1.72.1 on x86_64
+
+| Threading Techniques       | Rust criterion (msec) | Rust Average of 100 runs (nanosec) | C Average of 100 runs (nanosec) |
+| :------------------------- | -------------: | -----------------------: | --------------------: |
+| Switch Dispatch            |         6.2969 |                5,525,399 |            13,251,234 |
+| Direct Call Threading      |         5.6537 |                4,754,806 |            18,263,882 |
+| Direct Tail Call Threading |         2.9998 |                2,728,664 |             6,496,336 |
+| Direct Threading           |        25.899  |               18,310,069 |                    43 |
+| Optimized Direct Threading |        12.203  |               14,352,958 |                     - |
+
+Measured on DELL-inspiron 15 3000 2019 (Intel Core i7-1065G7) with rustc 1.72.1 and clang 15.0.7
 
 ## References
 
