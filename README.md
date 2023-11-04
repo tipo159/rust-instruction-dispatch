@@ -8,11 +8,15 @@ This is a project to learn how to implement instruction dispatch in Rust. Instru
 - Direct Threading
 - Optimized Direct Threading
 
-"Writing Interpreters in Rust: a Guide[1]" says this about "Instruction dispatch" in "4.8 Virtual Machine: Architecture and Design"
+"Writing Interpreters in Rust: a Guide[^1]" says this about "Instruction dispatch" in "4.8 Virtual Machine: Architecture and Design"
 
-> Prior research[2] into implementing dispatch in Rust concludes that simple switch-style dispatch is
+[^1] 2022. Writing Interpreters in Rust: a Guide. Retrieved from <https://rust-hosted-langs.github.io/book/>.
+
+> Prior research[^2] into implementing dispatch in Rust concludes that simple switch-style dispatch is
 > the only cross-platform construct we can reasonably make use of. Other mechanisms come with
 > undesirable complexity or are platform dependent.
+
+[^2] Peter Liniker. 2017. Virtual Machine Dispatch Experiments in Rust. Retrieved from <https://pliniker.github.io/post/dispatchers/>.
 
 In my environment (MacBook Pro 13" 2020 Apple M1), Direct Tail Call Threading was faster than Switch Dispatch.
 
@@ -135,9 +139,13 @@ Trace:
 
 ## Instruction Dispatch Techniques
 
-For details on the individual instruction dispatch techniques, see the third chapter entitled "Dispatch Techniques" in the paper "YETI: a gradualY Extensible Trace Interpreter[3]".
+For details on the individual instruction dispatch techniques, see the third chapter entitled "Dispatch Techniques" in the paper "YETI: a gradualY Extensible Trace Interpreter[^3]".
 
-The Wikipedia article "Threaded code[4]" is also helpful.
+[^3] Mathew Zaleski. 2008. YETI: a graduallY Extensible Trace Interpreter. Ph.D. Dissertation. University of Tronto, Toronto, ON.
+
+The Wikipedia article "Threaded code[^4]" is also helpful.
+
+[^4] Wikipedia. 2023. Threaded code. Retrieved from <https://en.wikipedia.org/wiki/Threaded_code>.
 
 ### Switch Dispatch
 
@@ -151,15 +159,22 @@ In direct call threading, each bytecode instruction is translated into a functio
 
 In direct call threading,  each bytecode instruction is translated into a function pointer to an instruction implementation function. The return from each function and the next function call are tail-call optimized.
 
-This technique is mentioned in "Direct tail-call threading in Rust[5]”.
+This technique is mentioned in "Direct tail-call threading in Rust[^5]”.
 
-The Wikipedia article "Tail call[6]" is also helpful.
+[^5] Demindiro. 2021. Direct tail-call threading in Rust. Retrieved from <https://www.demindiro.com/blog/2021/rust-direct-tail-call-threading>.
+
+The Wikipedia article "Tail call[^6]" is also helpful.
+
+[^6] Wikipedia. 2023. Tail call. Retrieved from <https://en.wikipedia.org/wiki/Tail_call>.
 
 ### Direct Threading
 
 In direct threading, each bytecode is executed by jumping to its implementation address.
 
-The program "threadedasm.rs " in "Virtual Machine Dispatch Experiments in Rust[7]" implements direct threading in Rust using inline assembly. But, the program "threadedasm.rs" uses the old inline asm syntax, so I write direct threading program using the new inline asm syntax[8].
+The program "threadedasm.rs " in "Virtual Machine Dispatch Experiments in Rust[^7]" implements direct threading in Rust using inline assembly. But, the program "threadedasm.rs" uses the old inline asm syntax, so I write direct threading program using the new inline asm syntax[^8].
+
+[^7] Peter Liniker. 2017. Virtual Machine Dispatch Experiments in Rust. Retrieved from <https://github.com/pliniker/dispatchers>.
+[^8] Rust RFC. 2873-inline-asm. Retrieved from <https://rust-lang.github.io/rfcs/2873-inline-asm.html>.
 
 My program is only for Aarch64. I would appreciate it if you could send me pull requests for other architectural implementations.
 
@@ -246,10 +261,10 @@ Add memory location 0 by 1 from 0 to 1,048,575(0xfffff).
 | Switch Dispatch            |         3.5685 |                3,503,852 |             3,455,825 |
 | Direct Call Threading      |         6.9213 |                6,852,853 |             6,303,675 |
 | Direct Tail Call Threading |         2.3721 |                2,429,894 |             2,368,041 |
-| Direct Threading           |           -*^1 |                     -*^1 |                    36 |
-| Optimized Direct Threading |           -*^1 |                     -*^1 |                     - |
+| Direct Threading           |          -[^9] |                    -[^9] |                    36 |
+| Optimized Direct Threading |          -[^9] |                    -[^9] |                     - |
 
-*^1: compile error: invalid CFI advance_loc expression
+[^9] compile error: invalid CFI advance_loc expression
 
 Measured on MacBook Pro 13" 2020 (Apple M1) with rustc 1.73.0 and clang 17.0.3
 
@@ -290,21 +305,3 @@ Measured on DELL-inspiron 15 3000 2019 (Intel Core i7-1065G7) with rustc 1.73.0 
 | Optimized Direct Threading |        12.203  |               14,352,958 |                     - |
 
 Measured on DELL-inspiron 15 3000 2019 (Intel Core i7-1065G7) with rustc 1.72.1 and clang 15.0.7
-
-## References
-
-[1] 2022. Writing Interpreters in Rust: a Guide. Retrieved from <https://rust-hosted-langs.github.io/book/>.
-
-[2] Peter Liniker. 2017. Virtual Machine Dispatch Experiments in Rust. Retrieved from <https://pliniker.github.io/post/dispatchers/>.
-
-[3] Mathew Zaleski. 2008. YETI: a graduallY Extensible Trace Interpreter. Ph.D. Dissertation. University of Tronto, Toronto, ON.
-
-[4] Wikipedia. 2023. Threaded code. Retrieved from <https://en.wikipedia.org/wiki/Threaded_code>.
-
-[5] Demindiro. 2021. Direct tail-call threading in Rust. Retrieved from <https://www.demindiro.com/blog/2021/rust-direct-tail-call-threading>.
-
-[6] Wikipedia. 2023. Tail call. Retrieved from <https://en.wikipedia.org/wiki/Tail_call>.
-
-[7] Peter Liniker. 2017. Virtual Machine Dispatch Experiments in Rust. Retrieved from <https://github.com/pliniker/dispatchers>.
-
-[8] Rust RFC. 2873-inline-asm. Retrieved from <https://rust-lang.github.io/rfcs/2873-inline-asm.html>.
