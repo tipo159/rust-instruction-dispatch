@@ -1,15 +1,25 @@
 TARGET = direct_tail_call_threading
 
-LLVM = $(TARGET).ll
+SRCS = main.c internal_instruction.c convert.c
 
-ASM = $(TARGET).s
+OBJS = $(SRCS:.c=.o)
 
-ANALYZE = $(TARGET).plist
+LLVM = internal_instruction.ll
+
+ASM = internal_instruction.s
+
+ANALYZE = internal_instruction.plist
 
 CC=clang
-CFLAGS = -Ofast
+CFLAGS = -Wall -Ofast
 
 all:	$(TARGET)
+
+debug:
+	$(MAKE) CFLAGS="$(CFLAGS) -DDEBUG"
+
+$(TARGET): $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) -o $@
 
 llvm:	$(LLVM)
 
@@ -27,4 +37,4 @@ analyze:	$(ANALYZE)
 	$(CC) --analyze $<
 
 clean:
-	$(RM) $(TARGET) $(LLVM) $(ASM) $(ANALYZE)
+	$(RM) $(TARGET) $(OBJS) $(LLVM) $(ASM) $(ANALYZE)

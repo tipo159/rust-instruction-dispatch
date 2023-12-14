@@ -16,6 +16,9 @@ Cargo.lock
 **/optimized_direct_threading
 **/switch_dispatch
 
+# execuobjecttable files in C
+**/*.o
+
 # clang analyzer output files in C
 **/direct_call_threading.plist
 **/direct_tail_call_threading.plist

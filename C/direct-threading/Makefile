@@ -1,15 +1,25 @@
 TARGET = direct_threading
 
-LLVM = $(TARGET).ll
+SRCS = main.c bytecode.c
 
-ASM = $(TARGET).s
+OBJS = $(SRCS:.c=.o)
 
-ANALYZE = $(TARGET).plist
+LLVM = bytecode.ll
+
+ASM = bytecode.s
+
+ANALYZE = bytecode.plist
 
 CC=clang
-CFLAGS = -Ofast
+CFLAGS = -Wall -Ofast
 
 all:	$(TARGET)
+
+debug:
+	$(MAKE) CFLAGS="$(CFLAGS) -DDEBUG"
+
+$(TARGET): $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) -o $@
 
 llvm:	$(LLVM)
 
@@ -27,4 +37,4 @@ analyze:	$(ANALYZE)
 	$(CC) --analyze $<
 
 clean:
-	$(RM) $(TARGET) $(LLVM) $(ASM) $(ANALYZE)
+	$(RM) $(TARGET) $(OBJS) $(LLVM) $(ASM) $(ANALYZE)
