@@ -37,4 +37,4 @@ typedef unsigned int bytecode_t;
 
 #define GET_OPERAND_JMP(instruction) (((instruction) >> 4) & 0xfff)
 
-extern void executeProgram(const bytecode_t *program, const int programSize);
+extern void vm_loop(const bytecode_t *program, const int programSize);

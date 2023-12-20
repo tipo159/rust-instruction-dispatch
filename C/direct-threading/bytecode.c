@@ -4,12 +4,12 @@
 
 #define DISPATCH() goto *dispatch_table[GET_OPCODE(*(++programPointer))]
 
-void vm_loop(bytecode_t *programPointer)
+void vm_loop(bytecode_t *program)
 {
     void *dispatch_table[] = {&&do_load, &&do_add, &&do_jmpne, &&do_print,
                               &&do_ret};
     int memory[256] = {0};
-    bytecode_t *program = programPointer;
+    bytecode_t *programPointer = program;
 
     goto *dispatch_table[GET_OPCODE(*programPointer)];
 do_load:

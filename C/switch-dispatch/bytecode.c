@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "bytecode.h"
 
-void executeProgram(const bytecode_t *program, const int programSize)
+void vm_loop(const bytecode_t *program, const int programSize)
 {
     int programCounter = 0;
     int memory[256] = {0};
