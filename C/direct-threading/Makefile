@@ -12,11 +12,12 @@ ANALYZE = bytecode.plist
 
 CC=clang
 CFLAGS = -Wall -Ofast
+DEBUGFLAGS = -DDEBUG -gdwarf-5 -gembed-source
 
 all:	$(TARGET)
 
 debug:
-	$(MAKE) CFLAGS="$(CFLAGS) -DDEBUG"
+	$(MAKE) CFLAGS="$(CFLAGS) $(DEBUGFLAGS)"
 
 $(TARGET): $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o $@
@@ -28,10 +29,10 @@ asm:	$(ASM)
 analyze:	$(ANALYZE)
 
 %.ll:	%.c
-	$(CC) $(CFLAGS) -S -emit-llvm $<
+	$(CC) $(CFLAGS) $(DEBUGFLAGS) -g -S -emit-llvm $<
 
 %.s:	%.c
-	$(CC) $(CFLAGS) -g -S $<
+	$(CC) $(CFLAGS) $(DEBUGFLAGS) -g -S $<
 
 %.plist:	%.c
 	$(CC) --analyze $<

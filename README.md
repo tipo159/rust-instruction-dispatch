@@ -254,35 +254,19 @@ Add memory location 0 by 1 from 0 to 1,048,575(0xfffff).
 
 ### Aarch64
 
-#### rustc 1.73.0 on Aarch64
-
 | Threading Techniques       | Rust criterion (msec) | Rust Average of 100 runs (nanosec) | C Average of 100 runs (nanosec) |
 | :------------------------- | -------------: | -----------------------: | --------------------: |
-| Switch Dispatch            |         3.5685 |                3,503,852 |             3,455,825 |
-| Direct Call Threading      |         6.9213 |                6,852,853 |             6,303,675 |
-| Direct Tail Call Threading |         2.3721 |                2,429,894 |             2,368,041 |
-| Direct Threading           |          -[^9] |                    -[^9] |                    36 |
+| Switch Dispatch            |         3.4717 |                3,692,275 |             6,814,059 |
+| Direct Call Threading      |         7.5944 |                6,632,531 |             6,314,546 |
+| Direct Tail Call Threading |         2.3019 |                2,351,287 |             2,267,916 |
+| Direct Threading           |          -[^9] |                    -[^9] |             6,640,264 |
 | Optimized Direct Threading |          -[^9] |                    -[^9] |                     - |
 
 [^9]: compile error: invalid CFI advance_loc expression
 
-Measured on MacBook Pro 13" 2020 (Apple M1) with rustc 1.73.0 and clang 17.0.3
-
-#### rustc 1.72.1 on Aarch64
-
-| Threading Techniques       | Rust criterion (msec) | Rust Average of 100 runs (nanosec) | C Average of 100 runs (nanosec) |
-| :------------------------- | -------------: | -----------------------: | --------------------: |
-| Switch Dispatch            |         3.5174 |                3,511,867 |             3,597,721 |
-| Direct Call Threading      |         6.8308 |                6,768,575 |             6,490,491 |
-| Direct Tail Call Threading |         2.2993 |                2,379,756 |             2,456,201 |
-| Direct Threading           |        16.194  |               15,870,563 |                    34 |
-| Optimized Direct Threading |        12.984  |               12,069,665 |                     - |
-
-Measured on MacBook Pro 13" 2020 (Apple M1) with rustc 1.72.1 and clang-1500.0.40.1
+Measured on MacBook Pro 13" 2020 (Apple M1) with rustc 1.74.1 and clang 17.0.6
 
 ### x86_64
-
-#### rustc 1.73.0 on x86_64
 
 | Threading Techniques       | Rust criterion (msec) | Rust Average of 100 runs (nanosec) | C Average of 100 runs (nanosec) |
 | :------------------------- | -------------: | -----------------------: | --------------------: |
@@ -292,16 +276,4 @@ Measured on MacBook Pro 13" 2020 (Apple M1) with rustc 1.72.1 and clang-1500.0.4
 | Direct Threading           |        32.117  |               23,723,130 |                    43 |
 | Optimized Direct Threading |        13.769  |               27,872,318 |                     - |
 
-Measured on DELL-inspiron 15 3000 2019 (Intel Core i7-1065G7) with rustc 1.73.0 and clang 15.0.7
-
-#### rustc 1.72.1 on x86_64
-
-| Threading Techniques       | Rust criterion (msec) | Rust Average of 100 runs (nanosec) | C Average of 100 runs (nanosec) |
-| :------------------------- | -------------: | -----------------------: | --------------------: |
-| Switch Dispatch            |         6.2969 |                5,525,399 |            13,251,234 |
-| Direct Call Threading      |         5.6537 |                4,754,806 |            18,263,882 |
-| Direct Tail Call Threading |         2.9998 |                2,728,664 |             6,496,336 |
-| Direct Threading           |        25.899  |               18,310,069 |                    43 |
-| Optimized Direct Threading |        12.203  |               14,352,958 |                     - |
-
-Measured on DELL-inspiron 15 3000 2019 (Intel Core i7-1065G7) with rustc 1.72.1 and clang 15.0.7
+Measured on DELL-inspiron 15 3000 2019 (Intel Core i7-1065G7) with rustc 1.74.1 and clang 15.0.7
