@@ -270,10 +270,10 @@ Measured on MacBook Pro 13" 2020 (Apple M1) with rustc 1.74.1 and clang 17.0.6
 
 | Threading Techniques       | Rust criterion (msec) | Rust Average of 100 runs (nanosec) | C Average of 100 runs (nanosec) |
 | :------------------------- | -------------: | -----------------------: | --------------------: |
-| Switch Dispatch            |         5.8844 |                5,543,414 |            13,251,234 |
-| Direct Call Threading      |         6.3693 |                4,826,650 |            18,263,882 |
-| Direct Tail Call Threading |         2.8581 |                2,694,275 |             6,496,336 |
-| Direct Threading           |        32.117  |               23,723,130 |                    43 |
-| Optimized Direct Threading |        13.769  |               27,872,318 |                     - |
+| Switch Dispatch            |         5.6764 |                5,502,017 |             8,995,246 |
+| Direct Call Threading      |         6.2569 |                4,696,036 |             6,448,540 |
+| Direct Tail Call Threading |         2.7967 |                2,741,853 |             3,000,971 |
+| Direct Threading           |        15.890  |               16,873,064 |             8,277,509 |
+| Optimized Direct Threading |        11.554  |               10,098,565 |                     - |
 
 Measured on DELL-inspiron 15 3000 2019 (Intel Core i7-1065G7) with rustc 1.74.1 and clang 15.0.7
