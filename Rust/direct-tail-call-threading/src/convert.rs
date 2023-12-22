@@ -22,10 +22,7 @@ type P = ExtraParam;
 /// # Safety
 ///
 /// This function accesses the union field
-pub unsafe fn convert(
-    program: &[Bytecode],
-    internal_program: &mut Vec<InternalInstruction>,
-) {
+pub unsafe fn convert(program: &[Bytecode], internal_program: &mut Vec<InternalInstruction>) {
     let mut i: usize = 0;
     loop {
         match get_opcode(program[i]) {
@@ -55,9 +52,7 @@ pub unsafe fn convert(
                     a: get_operand_a(program[i]) as u8,
                     b: get_operand_b(program[i]) as u8,
                     param: P {
-                        jmp: ptr::addr_of!(
-                            internal_program[get_operand_jmp(program[i]) as usize]
-                        ),
+                        jmp: ptr::addr_of!(internal_program[get_operand_jmp(program[i]) as usize]),
                     },
                 });
             }

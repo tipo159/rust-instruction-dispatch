@@ -2,7 +2,8 @@
 use super::bytecode::{make_opcode, make_opcode_a_b_c, make_opcode_a_b_jmp, make_opcode_a_imm};
 
 use super::bytecode::{
-    get_opcode, get_operand_a, get_operand_b, get_operand_c, get_operand_imm, get_operand_jmp, Bytecode, Opcode,
+    get_opcode, get_operand_a, get_operand_b, get_operand_c, get_operand_imm, get_operand_jmp,
+    Bytecode, Opcode,
 };
 use super::internal_instruction::{add, jmpne, load, print, ret, ExtraParam, InternalInstruction};
 
@@ -22,10 +23,7 @@ type RawPtr = *const ();
 /// # Safety
 ///
 /// This function accesses the union field
-pub unsafe fn convert(
-    program: &[Bytecode],
-    internal_program: &mut Vec<InternalInstruction>,
-) {
+pub unsafe fn convert(program: &[Bytecode], internal_program: &mut Vec<InternalInstruction>) {
     let mut i: usize = 0;
     loop {
         match get_opcode(program[i]) {

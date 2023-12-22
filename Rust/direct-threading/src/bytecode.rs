@@ -1,5 +1,4 @@
 /// Virtual machine bytecode set
-
 use std::arch::asm;
 
 /// Macro to set a label.
@@ -280,7 +279,7 @@ pub fn get_operand_jmp(bytecode: Bytecode) -> Operand {
 #[allow(named_asm_labels)]
 pub unsafe fn vm_loop(program: &[Bytecode]) {
     let mut memory = [0; 256];
-    let mut pc: usize = 0;
+    let mut program_counter: usize = 0;
     let jump_table: [usize; 5] = [
         label_addr!("_load_"),
         label_addr!("_add_"),
@@ -289,86 +288,97 @@ pub unsafe fn vm_loop(program: &[Bytecode]) {
         label_addr!("_ret_"),
     ];
 
-    dispatch!(get_opcode((*program)[pc]), jump_table);
+    dispatch!(get_opcode((*program)[program_counter]), jump_table);
 
     label!("_load_");
-    memory[get_operand_a((*program)[pc]) as usize] = get_operand_imm((*program)[pc]);
+    memory[get_operand_a((*program)[program_counter]) as usize] =
+        get_operand_imm((*program)[program_counter]);
     #[cfg(debug_assertions)]
     {
         println!(
-            "{pc}: memory[{}] = {}; memory[{}]:{}",
-            get_operand_a((*program)[pc]),
-            get_operand_imm((*program)[pc]),
-            get_operand_a((*program)[pc]),
-            memory[get_operand_a((*program)[pc]) as usize],
+            "{program_counter}: memory[{}] = {}; memory[{}]:{}",
+            get_operand_a((*program)[program_counter]),
+            get_operand_imm((*program)[program_counter]),
+            get_operand_a((*program)[program_counter]),
+            memory[get_operand_a((*program)[program_counter]) as usize],
         );
     }
-    pc += 1;
-    dispatch!(get_opcode((*program)[pc]), jump_table);
+    program_counter += 1;
+    dispatch!(
+        get_oprogram_counterode((*program)[program_counter]),
+        jump_table
+    );
 
     label!("_add_");
     #[cfg(debug_assertions)]
     {
         print!(
-            "{pc}: memory[{}]:{} = memory[{}]:{} + memory[{}]:{}",
-            get_operand_a((*program)[pc]),
-            memory[get_operand_a((*program)[pc]) as usize],
-            get_operand_b((*program)[pc]),
-            memory[get_operand_b((*program)[pc]) as usize],
-            get_operand_c((*program)[pc]),
-            memory[get_operand_c((*program)[pc]) as usize],
+            "{program_counter}: memory[{}]:{} = memory[{}]:{} + memory[{}]:{}",
+            get_operand_a((*program)[program_counter]),
+            memory[get_operand_a((*program)[program_counter]) as usize],
+            get_operand_b((*program)[program_counter]),
+            memory[get_operand_b((*program)[program_counter]) as usize],
+            get_operand_c((*program)[program_counter]),
+            memory[get_operand_c((*program)[program_counter]) as usize],
         );
     }
-    memory[get_operand_a((*program)[pc]) as usize] = memory[get_operand_b((*program)[pc]) as usize]
-        + memory[get_operand_c((*program)[pc]) as usize];
+    memory[get_operand_a((*program)[program_counter]) as usize] = memory
+        [get_operand_b((*program)[program_counter]) as usize]
+        + memory[get_operand_c((*program)[program_counter]) as usize];
     #[cfg(debug_assertions)]
     {
         println!(
             "; memory[{}]:{}",
-            get_operand_a((*program)[pc]),
-            memory[get_operand_a((*program)[pc]) as usize],
+            get_operand_a((*program)[program_counter]),
+            memory[get_operand_a((*program)[program_counter]) as usize],
         );
     }
-    pc += 1;
-    dispatch!(get_opcode((*program)[pc]), jump_table);
+    program_counter += 1;
+    dispatch!(get_opcode((*program)[program_counter]), jump_table);
 
     label!("_jmpne_");
     #[cfg(debug_assertions)]
     {
         print!(
-            "{pc}: if memory[{}]:{} != memory[{}]:{} pc = {}",
-            get_operand_a((*program)[pc]),
-            memory[get_operand_a((*program)[pc]) as usize],
-            get_operand_b((*program)[pc]),
-            memory[get_operand_b((*program)[pc]) as usize],
-            get_operand_jmp((*program)[pc]),
+            "{program_counter}: if memory[{}]:{} != memory[{}]:{} program_counter = {}",
+            get_operand_a((*program)[program_counter]),
+            memory[get_operand_a((*program)[program_counter]) as usize],
+            get_operand_b((*program)[program_counter]),
+            memory[get_operand_b((*program)[program_counter]) as usize],
+            get_operand_jmp((*program)[program_counter]),
         );
     }
-    if memory[get_operand_a((*program)[pc]) as usize]
-        != memory[get_operand_b((*program)[pc]) as usize]
+    if memory[get_operand_a((*program)[program_counter]) as usize]
+        != memory[get_operand_b((*program)[program_counter]) as usize]
     {
-        pc = get_operand_jmp((*program)[pc]) as usize - 1;
+        program_counter = get_operand_jmp((*program)[program_counter]) as usize - 1;
     };
     #[cfg(debug_assertions)]
     {
-        println!("; pc: {}", pc + 1);
+        println!("; program_counter: {}", program_counter + 1);
     }
-    pc += 1;
-    dispatch!(get_opcode((*program)[pc]), jump_table);
+    program_counter += 1;
+    dispatch!(get_opcode((*program)[program_counter]), jump_table);
 
     label!("_print_");
     #[cfg(debug_assertions)]
     {
-        println!("{pc}: print memory[{}]", get_operand_a((*program)[pc]));
+        println!(
+            "{program_counter}: print memory[{}]",
+            get_operand_a((*program)[program_counter])
+        );
     }
-    println!("{}", memory[get_operand_a((*program)[pc]) as usize]);
-    pc += 1;
-    dispatch!(get_opcode((*program)[pc]), jump_table);
+    println!(
+        "{}",
+        memory[get_operand_a((*program)[program_counter]) as usize]
+    );
+    program_counter += 1;
+    dispatch!(get_opcode((*program)[program_counter]), jump_table);
 
     label!("_ret_");
     #[cfg(debug_assertions)]
     {
-        println!("{pc}: ret");
+        println!("{program_counter}: ret");
     }
 }
 

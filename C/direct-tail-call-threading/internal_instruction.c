@@ -14,7 +14,7 @@
 #pragma clang diagnostic ignored "-Wformat"
 
 void load(internal_instruction_t *restrict instruction,
-                 int *restrict memory)
+          int *restrict memory)
 {
 #ifdef DEBUG
     printf("%x: load memory[%d] = %d\n", instruction, instruction->a, instruction->imm);
@@ -25,7 +25,7 @@ void load(internal_instruction_t *restrict instruction,
 }
 
 void add(internal_instruction_t *restrict instruction,
-                int *restrict memory)
+         int *restrict memory)
 {
 #ifdef DEBUG
     printf("%x: add memory[%d](%d) = memory[%d] + memory[%d]\n", instruction, instruction->a,
@@ -37,7 +37,7 @@ void add(internal_instruction_t *restrict instruction,
 }
 
 void jmpne(internal_instruction_t *restrict instruction,
-                  int *restrict memory)
+           int *restrict memory)
 {
 #ifdef DEBUG
     printf("%x: jmpne if memory[%d](%d) != memory[%d](%d) then pp = %x\n", instruction, instruction->a,
@@ -55,7 +55,7 @@ void jmpne(internal_instruction_t *restrict instruction,
 }
 
 void print(internal_instruction_t *restrict instruction,
-                  int *restrict memory)
+           int *restrict memory)
 {
 #ifdef DEBUG
     printf("%x: print memory[%d](%d)\n", instruction, instruction->a, memory[instruction->a]);
@@ -66,7 +66,7 @@ void print(internal_instruction_t *restrict instruction,
 }
 
 void ret(internal_instruction_t *restrict instruction,
-                int *restrict memory)
+         int *restrict memory)
 {
 #ifdef DEBUG
     printf("%x: ret\n", instruction);

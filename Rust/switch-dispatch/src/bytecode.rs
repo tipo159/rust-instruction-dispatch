@@ -211,24 +211,24 @@ pub fn get_operand_jmp(bytecode: Bytecode) -> Operand {
 /// # Arguments
 ///
 /// * `program` - Program
-/// 
+///
 /// # Safety
 ///
 /// This function accesses the union field
 pub unsafe fn vm_loop(program: &[Bytecode]) {
     let mut bytecode: &Bytecode;
     let mut memory = [0; 256];
-    let mut pc: usize = 0;
+    let mut program_counter: usize = 0;
 
     loop {
-        bytecode = &(*program)[pc];
+        bytecode = &(*program)[program_counter];
         match get_opcode(*bytecode) {
             Opcode::LOAD => {
                 memory[get_operand_a(*bytecode) as usize] = get_operand_imm(*bytecode);
                 #[cfg(debug_assertions)]
                 {
                     println!(
-                        "{pc}: memory[{}] = {}; memory[{}]:{}",
+                        "{program_counter}: memory[{}] = {}; memory[{}]:{}",
                         get_operand_a(*bytecode),
                         get_operand_imm(*bytecode),
                         get_operand_a(*bytecode),
@@ -240,7 +240,7 @@ pub unsafe fn vm_loop(program: &[Bytecode]) {
                 #[cfg(debug_assertions)]
                 {
                     print!(
-                        "{pc}: memory[{}]:{} = memory[{}]:{} + memory[{}]:{}",
+                        "{program_counter}: memory[{}]:{} = memory[{}]:{} + memory[{}]:{}",
                         get_operand_a(*bytecode),
                         memory[get_operand_a(*bytecode) as usize],
                         get_operand_b(*bytecode),
@@ -249,7 +249,8 @@ pub unsafe fn vm_loop(program: &[Bytecode]) {
                         memory[get_operand_c(*bytecode) as usize],
                     );
                 }
-                memory[get_operand_a(*bytecode) as usize] = memory[get_operand_b(*bytecode) as usize]
+                memory[get_operand_a(*bytecode) as usize] = memory
+                    [get_operand_b(*bytecode) as usize]
                     + memory[get_operand_c(*bytecode) as usize];
                 #[cfg(debug_assertions)]
                 {
@@ -264,7 +265,7 @@ pub unsafe fn vm_loop(program: &[Bytecode]) {
                 #[cfg(debug_assertions)]
                 {
                     print!(
-                        "{pc}: if memory[{}]:{} != memory[{}]:{} pc = {}",
+                        "{program_counter}: if memory[{}]:{} != memory[{}]:{} program_counter = {}",
                         get_operand_a(*bytecode),
                         memory[get_operand_a(*bytecode) as usize],
                         get_operand_b(*bytecode),
@@ -275,29 +276,32 @@ pub unsafe fn vm_loop(program: &[Bytecode]) {
                 if memory[get_operand_a(*bytecode) as usize]
                     != memory[get_operand_b(*bytecode) as usize]
                 {
-                    pc = get_operand_jmp(*bytecode) as usize - 1;
+                    program_counter = get_operand_jmp(*bytecode) as usize - 1;
                 }
                 #[cfg(debug_assertions)]
                 {
-                    println!("; pc: {}", pc + 1);
+                    println!("; program_counter: {}", program_counter + 1);
                 }
             }
             Opcode::PRINT => {
                 #[cfg(debug_assertions)]
                 {
-                    println!("{pc}: print memory[{}]", get_operand_a(*bytecode));
+                    println!(
+                        "{program_counter}: print memory[{}]",
+                        get_operand_a(*bytecode)
+                    );
                 }
                 println!("{}", memory[get_operand_a(*bytecode) as usize]);
             }
             Opcode::RET => {
                 #[cfg(debug_assertions)]
                 {
-                    println!("{pc}: ret");
+                    println!("{program_counter}: ret");
                 }
                 break;
             }
         }
-        pc += 1;
+        program_counter += 1;
     }
 }
 

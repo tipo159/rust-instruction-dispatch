@@ -3,7 +3,7 @@ use std::ptr;
 /// Access array element with get_unchecked if "unchecked_memory" feature is defined
 #[cfg(feature = "unchecked_memory")]
 macro_rules! get_mem {
-    ($mem:ident[$r:expr]) =>{
+    ($mem:ident[$r:expr]) => {
         $mem.get_unchecked($r as usize)
     };
     (mut $mem:ident[$r:expr]) => {
@@ -49,7 +49,7 @@ unsafe impl Sync for InternalInstruction {}
 /// # Arguments
 ///
 /// * `internal_program` - internal program
-/// * `pc` - program counter
+/// * `program_counter` - program counter
 /// * `memory` - memory
 ///
 /// # Safety
@@ -57,23 +57,23 @@ unsafe impl Sync for InternalInstruction {}
 /// This function accesses the union field
 pub unsafe fn load(
     internal_program: &[InternalInstruction],
-    pc: &mut usize,
+    program_counter: &mut usize,
     memory: &mut [u32],
 ) {
-    *get_mem!(mut memory[(*internal_program)[*pc].a]) =
-        (*internal_program)[*pc].param.imm;
+    *get_mem!(mut memory[(*internal_program)[*program_counter].a]) =
+        (*internal_program)[*program_counter].param.imm;
     #[cfg(debug_assertions)]
     {
         println!(
             "{}: memory[{}] = {}; memory[{}]:{}",
-            *pc,
-            (*internal_program)[*pc].a,
-            (*internal_program)[*pc].param.imm,
-            (*internal_program)[*pc].a,
-            memory[(*internal_program)[*pc].a as usize],
+            *program_counter,
+            (*internal_program)[*program_counter].a,
+            (*internal_program)[*program_counter].param.imm,
+            (*internal_program)[*program_counter].a,
+            memory[(*internal_program)[*program_counter].a as usize],
         );
     }
-    *pc += 1;
+    *program_counter += 1;
 }
 
 /// Function to execute add
@@ -81,7 +81,7 @@ pub unsafe fn load(
 /// # Arguments
 ///
 /// * `internal_program` - internal program
-/// * `pc` - program counter
+/// * `program_counter` - program counter
 /// * `memory` - memory
 ///
 /// # Safety
@@ -89,34 +89,34 @@ pub unsafe fn load(
 /// This function accesses the union field
 pub unsafe fn add(
     internal_program: &[InternalInstruction],
-    pc: &mut usize,
+    program_counter: &mut usize,
     memory: &mut [u32],
 ) {
     #[cfg(debug_assertions)]
     {
         print!(
             "{}: memory[{}]:{} = memory[{}]:{} + memory[{}]:{}",
-            *pc,
-            (*internal_program)[*pc].a,
-            memory[(*internal_program)[*pc].a as usize],
-            (*internal_program)[*pc].b,
-            memory[(*internal_program)[*pc].b as usize],
-            (*internal_program)[*pc].param.c,
-            memory[(*internal_program)[*pc].param.c as usize],
+            *program_counter,
+            (*internal_program)[*program_counter].a,
+            memory[(*internal_program)[*program_counter].a as usize],
+            (*internal_program)[*program_counter].b,
+            memory[(*internal_program)[*program_counter].b as usize],
+            (*internal_program)[*program_counter].param.c,
+            memory[(*internal_program)[*program_counter].param.c as usize],
         );
     }
-    *get_mem!(mut memory[(*internal_program)[*pc].a]) =
-        *get_mem!(memory[(*internal_program)[*pc].b])
-            + *get_mem!(memory[(*internal_program)[*pc].param.c]);
+    *get_mem!(mut memory[(*internal_program)[*program_counter].a]) =
+        *get_mem!(memory[(*internal_program)[*program_counter].b])
+            + *get_mem!(memory[(*internal_program)[*program_counter].param.c]);
     #[cfg(debug_assertions)]
     {
         println!(
             "; memory[{}]:{}",
-            (*internal_program)[*pc].a,
-            memory[(*internal_program)[*pc].a as usize],
+            (*internal_program)[*program_counter].a,
+            memory[(*internal_program)[*program_counter].a as usize],
         );
     }
-    *pc += 1;
+    *program_counter += 1;
 }
 
 /// Function to execute jmpne
@@ -124,7 +124,7 @@ pub unsafe fn add(
 /// # Arguments
 ///
 /// * `internal_program` - internal program
-/// * `pc` - program counter
+/// * `program_counter` - program counter
 /// * `memory` - memory
 ///
 /// # Safety
@@ -132,31 +132,31 @@ pub unsafe fn add(
 /// This function accesses the union field
 pub unsafe fn jmpne(
     internal_program: &[InternalInstruction],
-    pc: &mut usize,
+    program_counter: &mut usize,
     memory: &mut [u32],
 ) {
     #[cfg(debug_assertions)]
     {
         print!(
-            "{}: if memory[{}]:{} != memory[{}]:{} pc = {}",
-            *pc,
-            (*internal_program)[*pc].a,
-            memory[(*internal_program)[*pc].a as usize],
-            (*internal_program)[*pc].b,
-            memory[(*internal_program)[*pc].b as usize],
-            (*internal_program)[*pc].param.jmp,
+            "{}: if memory[{}]:{} != memory[{}]:{} program_counter = {}",
+            *program_counter,
+            (*internal_program)[*program_counter].a,
+            memory[(*internal_program)[*program_counter].a as usize],
+            (*internal_program)[*program_counter].b,
+            memory[(*internal_program)[*program_counter].b as usize],
+            (*internal_program)[*program_counter].param.jmp,
         );
     }
-    if get_mem!(memory[(*internal_program)[*pc].a])
-        != get_mem!(memory[(*internal_program)[*pc].b])
+    if get_mem!(memory[(*internal_program)[*program_counter].a])
+        != get_mem!(memory[(*internal_program)[*program_counter].b])
     {
-        *pc = (*internal_program)[*pc].param.jmp as usize;
+        *program_counter = (*internal_program)[*program_counter].param.jmp as usize;
     } else {
-        *pc += 1;
+        *program_counter += 1;
     };
     #[cfg(debug_assertions)]
     {
-        println!("; pc: {}", *pc,);
+        println!("; program_counter: {}", *program_counter,);
     }
 }
 
@@ -165,7 +165,7 @@ pub unsafe fn jmpne(
 /// # Arguments
 ///
 /// * `internal_program` - internal program
-/// * `pc` - program counter
+/// * `program_counter` - program counter
 /// * `memory` - memory
 ///
 /// # Safety
@@ -173,18 +173,22 @@ pub unsafe fn jmpne(
 /// This function accesses the union field
 pub unsafe fn print(
     internal_program: &[InternalInstruction],
-    pc: &mut usize,
+    program_counter: &mut usize,
     memory: &mut [u32],
 ) {
     #[cfg(debug_assertions)]
     {
-        println!("{}: print memory[{}]", *pc, (*internal_program)[*pc].a,);
+        println!(
+            "{}: print memory[{}]",
+            *program_counter,
+            (*internal_program)[*program_counter].a,
+        );
     }
     println!(
         "{}",
-        get_mem!(memory[(*internal_program)[*pc].a as usize])
+        get_mem!(memory[(*internal_program)[*program_counter].a as usize])
     );
-    *pc += 1;
+    *program_counter += 1;
 }
 
 /// Function to execute ret
@@ -192,7 +196,7 @@ pub unsafe fn print(
 /// # Arguments
 ///
 /// * `internal_program` - internal program
-/// * `pc` - program counter
+/// * `program_counter` - program counter
 /// * `memory` - memory
 ///
 /// # Safety
@@ -200,14 +204,14 @@ pub unsafe fn print(
 /// This function accesses the union field
 pub unsafe fn ret(
     _internal_program: &[InternalInstruction],
-    pc: &mut usize,
+    program_counter: &mut usize,
     _memory: &mut [u32],
 ) {
     #[cfg(debug_assertions)]
     {
-        println!("{}: ret", *pc);
+        println!("{}: ret", *program_counter);
     }
-    *pc += 1;
+    *program_counter += 1;
 }
 
 /// Virtual Machine loop
@@ -222,11 +226,15 @@ pub unsafe fn ret(
 /// This function accesses the union field
 pub unsafe fn vm_loop(internal_program: &[InternalInstruction], size: usize) {
     let mut memory: [u32; 256] = [0; 256];
-    let mut pc: usize = 0;
+    let mut program_counter: usize = 0;
 
-    while pc < size {
+    while program_counter < size {
         // SAFETY: the internal_program is valid.
-        ((*internal_program)[pc].handler)(internal_program, &mut pc, &mut memory);
+        ((*internal_program)[program_counter].handler)(
+            internal_program,
+            &mut program_counter,
+            &mut memory,
+        );
     }
 }
 
@@ -255,7 +263,7 @@ pub unsafe fn print_internal_instruction(instruction: *const InternalInstruction
         );
     } else if ptr::eq((*instruction).handler as *const (), jmpne as *const ()) {
         println!(
-            "jmpne: if memory[{}] != memory[{}] pc = {}",
+            "jmpne: if memory[{}] != memory[{}] program_counter = {}",
             (*instruction).a,
             (*instruction).b,
             (*instruction).param.jmp
@@ -276,12 +284,12 @@ fn test_load() {
         param: ExtraParam { imm: 1 },
     }];
     let mut memory: [u32; 256] = [0; 256];
-    let mut pc: usize = 0;
+    let mut program_counter: usize = 0;
 
     unsafe {
-        load(&internal_program, &mut pc, &mut memory);
+        load(&internal_program, &mut program_counter, &mut memory);
     }
-    assert_eq!(1, pc);
+    assert_eq!(1, program_counter);
     assert_eq!(1, memory[0]);
 }
 
@@ -294,15 +302,15 @@ fn test_add() {
         param: ExtraParam { imm: 2 },
     }];
     let mut memory: [u32; 256] = [0; 256];
-    let mut pc: usize = 0;
+    let mut program_counter: usize = 0;
 
     memory[0] = 0;
     memory[1] = 1;
     memory[2] = 2;
     unsafe {
-        add(&internal_program, &mut pc, &mut memory);
+        add(&internal_program, &mut program_counter, &mut memory);
     }
-    assert_eq!(1, pc);
+    assert_eq!(1, program_counter);
     assert_eq!(3, memory[0]);
 }
 
@@ -315,14 +323,14 @@ fn test_jmpne_true() {
         param: ExtraParam { jmp: 0 },
     }];
     let mut memory: [u32; 256] = [0; 256];
-    let mut pc: usize = 0;
+    let mut program_counter: usize = 0;
 
     memory[0] = 0;
     memory[1] = 1;
     unsafe {
-        jmpne(&internal_program, &mut pc, &mut memory);
+        jmpne(&internal_program, &mut program_counter, &mut memory);
     }
-    assert_eq!(0, pc);
+    assert_eq!(0, program_counter);
 }
 
 #[test]
@@ -334,12 +342,12 @@ fn test_jmpne_false() {
         param: ExtraParam { jmp: 0 },
     }];
     let mut memory: [u32; 256] = [0; 256];
-    let mut pc: usize = 0;
+    let mut program_counter: usize = 0;
 
     memory[0] = 0;
     memory[1] = 0;
     unsafe {
-        jmpne(&internal_program, &mut pc, &mut memory);
+        jmpne(&internal_program, &mut program_counter, &mut memory);
     }
-    assert_eq!(1, pc);
+    assert_eq!(1, program_counter);
 }

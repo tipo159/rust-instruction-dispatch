@@ -3,11 +3,10 @@ use std::time::Instant;
 static WARMING_UP_ITERATIONS: i64 = 10;
 static NUM_OF_ITERATIONS: i64 = 100;
 
-use mylib::convert::convert;
 use mylib::bytecode::{
-    make_opcode, make_opcode_a_b_c, make_opcode_a_b_jmp, make_opcode_a_imm, print_bytecode,
-    Opcode,
+    make_opcode, make_opcode_a_b_c, make_opcode_a_b_jmp, make_opcode_a_imm, print_bytecode, Opcode,
 };
+use mylib::convert::convert;
 use mylib::internal_instruction::{print_internal_instruction, vm_loop, InternalInstruction};
 
 fn main() {
@@ -50,7 +49,7 @@ fn main() {
     }
 
     if cfg!(not(debug_assertions)) {
-        for i in 0..WARMING_UP_ITERATIONS+NUM_OF_ITERATIONS {
+        for i in 0..WARMING_UP_ITERATIONS + NUM_OF_ITERATIONS {
             if i == WARMING_UP_ITERATIONS {
                 average = 0;
             }

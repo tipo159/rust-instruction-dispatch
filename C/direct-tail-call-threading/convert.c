@@ -2,7 +2,7 @@
 #include "internal_instruction.h"
 
 void convert(const bytecode_t *restrict instructions,
-                    internal_instruction_t *internal_instructions)
+             internal_instruction_t *internal_instructions)
 {
     int i = 0;
     while (1)

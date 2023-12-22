@@ -59,138 +59,131 @@ unsafe fn next_instruction(instruction: *const InternalInstruction, memory: &mut
 ///
 /// # Arguments
 ///
-/// * `internal_program` - internal program
+/// * `instruction` - internal instruction
 /// * `memory` - memory
 ///
 /// # Safety
 ///
 /// This function accesses the union field
-pub unsafe fn load(internal_program: *const InternalInstruction, memory: &mut [u32]) {
-    *get_mem!(mut memory[(*internal_program).a]) = (*internal_program).param.imm;
+pub unsafe fn load(instruction: *const InternalInstruction, memory: &mut [u32]) {
+    *get_mem!(mut memory[(*instruction).a]) = (*instruction).param.imm;
     #[cfg(debug_assertions)]
     {
         println!(
-            "{internal_program:p}: memory[{}] = {}; memory[{}]:{}",
-            (*internal_program).a,
-            (*internal_program).param.imm,
-            (*internal_program).a,
-            memory[(*internal_program).a as usize]
+            "{instruction:p}: memory[{}] = {}; memory[{}]:{}",
+            (*instruction).a,
+            (*instruction).param.imm,
+            (*instruction).a,
+            memory[(*instruction).a as usize]
         );
     }
-    next_instruction(internal_program.offset(1), memory)
+    next_instruction(instruction.offset(1), memory)
 }
 
 /// Function to execute add
 ///
 /// # Arguments
 ///
-/// * `internal_program` - internal program
+/// * `instruction` - internal instruction
 /// * `memory` - memory
 ///
 /// # Safety
 ///
 /// This function accesses the union field
-pub unsafe fn add(internal_program: *const InternalInstruction, memory: &mut [u32]) {
+pub unsafe fn add(instruction: *const InternalInstruction, memory: &mut [u32]) {
     #[cfg(debug_assertions)]
     {
         print!(
-            "{internal_program:p}: memory[{}]:{} = memory[{}]:{} + memory[{}]:{}",
-            (*internal_program).a,
-            memory[(*internal_program).a as usize],
-            (*internal_program).b,
-            memory[(*internal_program).b as usize],
-            (*internal_program).param.c,
-            memory[(*internal_program).param.c as usize],
+            "{instruction:p}: memory[{}]:{} = memory[{}]:{} + memory[{}]:{}",
+            (*instruction).a,
+            memory[(*instruction).a as usize],
+            (*instruction).b,
+            memory[(*instruction).b as usize],
+            (*instruction).param.c,
+            memory[(*instruction).param.c as usize],
         );
     }
-    *get_mem!(mut memory[(*internal_program).a]) =
-        *get_mem!(memory[(*internal_program).b])
-            + *get_mem!(memory[(*internal_program).param.c]);
+    *get_mem!(mut memory[(*instruction).a]) =
+        *get_mem!(memory[(*instruction).b]) + *get_mem!(memory[(*instruction).param.c]);
     #[cfg(debug_assertions)]
     {
         println!(
             "; memory[{}]:{}",
-            (*internal_program).a,
-            memory[(*internal_program).a as usize],
+            (*instruction).a,
+            memory[(*instruction).a as usize],
         );
     }
-    next_instruction(internal_program.offset(1), memory)
+    next_instruction(instruction.offset(1), memory)
 }
 
 /// Function to execute jmpne
 ///
 /// # Arguments
 ///
-/// * `internal_program` - internal program
-/// * `pc` - program counter
+/// * `instruction` - internal instruction
 /// * `memory` - memory
 ///
 /// # Safety
 ///
 /// This function accesses the union field
-pub unsafe fn jmpne(internal_program: *const InternalInstruction, memory: &mut [u32]) {
+pub unsafe fn jmpne(instruction: *const InternalInstruction, memory: &mut [u32]) {
     #[cfg(debug_assertions)]
     {
         print!(
-            "{internal_program:p}: if memory[{}]:{} != memory[{}]:{} pc = {:p}",
-            (*internal_program).a,
-            memory[(*internal_program).a as usize],
-            (*internal_program).b,
-            memory[(*internal_program).b as usize],
-            (*internal_program).param.jmp,
+            "{instruction:p}: if memory[{}]:{} != memory[{}]:{} pc = {:p}",
+            (*instruction).a,
+            memory[(*instruction).a as usize],
+            (*instruction).b,
+            memory[(*instruction).b as usize],
+            (*instruction).param.jmp,
         );
     }
-    let internal_program = if get_mem!(memory[(*internal_program).a])
-        != get_mem!(memory[(*internal_program).b])
-    {
-        (*internal_program).param.jmp
+    let instruction = if get_mem!(memory[(*instruction).a]) != get_mem!(memory[(*instruction).b]) {
+        (*instruction).param.jmp
     } else {
-        internal_program.offset(1)
+        instruction.offset(1)
     };
     #[cfg(debug_assertions)]
     {
-        println!("; pc: {internal_program:p}");
+        println!("; pc: {instruction:p}");
     }
-    next_instruction(internal_program, memory)
+    next_instruction(instruction, memory)
 }
 
 /// Function to execute print
 ///
 /// # Arguments
 ///
-/// * `internal_program` - internal program
+/// * `instruction` - internal instruction
 /// * `memory` - memory
 ///
 /// # Safety
 ///
 /// This function accesses the union field
-pub unsafe fn print(internal_program: *const InternalInstruction, memory: &mut [u32]) {
+pub unsafe fn print(instruction: *const InternalInstruction, memory: &mut [u32]) {
     #[cfg(debug_assertions)]
     {
-        println!(
-            "{internal_program:p}: print memory[{}]",
-            (*internal_program).a,
-        );
+        println!("{instruction:p}: print memory[{}]", (*instruction).a,);
     }
-    println!("{}", get_mem!(memory[(*internal_program).a as usize]));
-    next_instruction(internal_program.offset(1), memory)
+    println!("{}", get_mem!(memory[(*instruction).a as usize]));
+    next_instruction(instruction.offset(1), memory)
 }
 
 /// Function to execute ret
 ///
 /// # Arguments
 ///
-/// * `internal_program` - internal program
+/// * `instruction` - internal instruction
 /// * `memory` - memory
 ///
 /// # Safety
 ///
 /// This function accesses the union field
 #[allow(unused_variables)]
-pub unsafe fn ret(internal_program: *const InternalInstruction, _memory: &mut [u32]) {
+pub unsafe fn ret(instruction: *const InternalInstruction, _memory: &mut [u32]) {
     #[cfg(debug_assertions)]
     {
-        println!("{internal_program:p}: ret");
+        println!("{instruction:p}: ret");
     }
 }
 
@@ -198,15 +191,15 @@ pub unsafe fn ret(internal_program: *const InternalInstruction, _memory: &mut [u
 ///
 /// # Arguments
 ///
-/// * `internal_program` - internal program
+/// * `instruction` - internal instruction
 ///
 /// # Safety
 ///
 /// This function accesses the union field
-pub unsafe fn vm_loop(internal_program: &[InternalInstruction]) {
+pub unsafe fn vm_loop(instruction: &[InternalInstruction]) {
     let mut memory: [u32; 256] = [0; 256];
 
-    ((*internal_program)[0].handler)(&(*internal_program)[0], &mut memory);
+    ((*instruction)[0].handler)(&(*instruction)[0], &mut memory);
 }
 
 /// Print internal instruction

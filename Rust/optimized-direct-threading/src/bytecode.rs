@@ -1,5 +1,4 @@
 /// Virtual machine bytecode set
-
 use std::arch::asm;
 
 /// Macro to set a label.
