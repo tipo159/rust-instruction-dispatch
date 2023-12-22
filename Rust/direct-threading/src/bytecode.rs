@@ -304,10 +304,7 @@ pub unsafe fn vm_loop(program: &[Bytecode]) {
         );
     }
     program_counter += 1;
-    dispatch!(
-        get_oprogram_counterode((*program)[program_counter]),
-        jump_table
-    );
+    dispatch!(get_opcode((*program)[program_counter]), jump_table);
 
     label!("_add_");
     #[cfg(debug_assertions)]
