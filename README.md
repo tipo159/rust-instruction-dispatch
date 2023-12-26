@@ -254,8 +254,8 @@ Add memory location 0 by 1 from 0 to 1,048,575(0xfffff).
 
 ### Aarch64
 
-| Threading Techniques       | Rust criterion (msec) | Rust Average of 100 runs (nanosec) | C Average of 100 runs (nanosec) clang | C Average of 100 runs (nanosec) gcc|
-| :------------------------- | -------------: | -----------------------: | --------------------: | --------------------: |
+| Threading Techniques | Rust criterion (ms) | Rust Average of 100 runs (ns) | C Average of 100 runs [clang] (ns) | C Average of 100 runs [gcc] (ns) |
+| :------------------------- | -----: | --------: | --------: | --------: |
 | Switch Dispatch            | 3.4717 | 3,692,275 | 8,294,589 | 7,704,200 |
 | Direct Call Threading      | 7.5944 | 6,632,531 | 7,776,315 | 7,755,413 |
 | Direct Tail Call Threading | 2.3019 | 2,351,287 | 2,585,706 | 2,518,542 |
@@ -266,14 +266,18 @@ Add memory location 0 by 1 from 0 to 1,048,575(0xfffff).
 
 Measured on MacBook Pro 13" 2020 (Apple M1) with rustc 1.74.1 and clang 17.0.6, gcc 13.2.0
 
+![Aarch64 result graph](/Arch64-graph.png "Average of 100 Runs on Aarch64")
+
 ### x86_64
 
-| Threading Techniques       | Rust criterion (msec) | Rust Average of 100 runs (nanosec) | C Average of 100 runs (nanosec) |
-| :------------------------- | -------------: | -----------------------: | --------------------: |
-| Switch Dispatch            |         5.6764 |                5,502,017 |             8,995,246 |
-| Direct Call Threading      |         6.2569 |                4,696,036 |             6,448,540 |
-| Direct Tail Call Threading |         2.7967 |                2,741,853 |             3,000,971 |
-| Direct Threading           |        15.890  |               16,873,064 |             8,277,509 |
-| Optimized Direct Threading |        11.554  |               10,098,565 |                     - |
+| Threading Techniques | Rust criterion (ms) | Rust Average of 100 runs (ns) | C Average of 100 runs [clang] (ns) | C Average of 100 runs [gcc] (ns) |
+| :------------------------- | -------: | ---------: | ---------: | ---------: |
+| Switch Dispatch            |   5.6764 |  5,502,017 | 23,849,510 | 13,881,652 |
+| Direct Call Threading      |   6.2569 |  4,696,036 | 19,624,856 | 19,149,867 |
+| Direct Tail Call Threading |   2.7967 |  2,741,853 |  5,581,770 |  6,873,807 |
+| Direct Threading           |  15.890  | 16,873,064 | 21,634,645 | 12,296,709 |
+| Optimized Direct Threading |  11.554  | 10,098,565 |          - |          - |
 
 Measured on DELL-inspiron 15 3000 2019 (Intel Core i7-1065G7) with rustc 1.74.1 and clang 15.0.7
+
+![x86_64 result graph](/x86_64-graph.png "Average of 100 Runs on x86_64")
