@@ -1,7 +1,9 @@
 #pragma once
 
+#if defined(__clang__)
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wvisibility"
+#endif
 typedef struct internal_instruction
 {
     void (*handler)(struct internal_instruction *instruction, int *memory);
@@ -14,7 +16,9 @@ typedef struct internal_instruction
         int imm;
     };
 } internal_instruction_t;
+#if defined(__clang__)
 #pragma clang diagnostic pop
+#endif
 
 extern void load(internal_instruction_t *restrict instruction,
                  int *restrict memory);

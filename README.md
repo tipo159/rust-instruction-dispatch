@@ -254,17 +254,17 @@ Add memory location 0 by 1 from 0 to 1,048,575(0xfffff).
 
 ### Aarch64
 
-| Threading Techniques       | Rust criterion (msec) | Rust Average of 100 runs (nanosec) | C Average of 100 runs (nanosec) |
-| :------------------------- | -------------: | -----------------------: | --------------------: |
-| Switch Dispatch            |         3.4717 |                3,692,275 |             6,814,059 |
-| Direct Call Threading      |         7.5944 |                6,632,531 |             6,314,546 |
-| Direct Tail Call Threading |         2.3019 |                2,351,287 |             2,267,916 |
-| Direct Threading           |          -[^9] |                    -[^9] |             6,640,264 |
-| Optimized Direct Threading |          -[^9] |                    -[^9] |                     - |
+| Threading Techniques       | Rust criterion (msec) | Rust Average of 100 runs (nanosec) | C Average of 100 runs (nanosec) clang | C Average of 100 runs (nanosec) gcc|
+| :------------------------- | -------------: | -----------------------: | --------------------: | --------------------: |
+| Switch Dispatch            | 3.4717 | 3,692,275 | 8,294,589 | 7,704,200 |
+| Direct Call Threading      | 7.5944 | 6,632,531 | 7,776,315 | 7,755,413 |
+| Direct Tail Call Threading | 2.3019 | 2,351,287 | 2,585,706 | 2,518,542 |
+| Direct Threading           |  -[^9] |     -[^9] | 7,228,139 | 7,588,820 |
+| Optimized Direct Threading |  -[^9] |     -[^9] |         - |         - |
 
 [^9]: compile error: invalid CFI advance_loc expression
 
-Measured on MacBook Pro 13" 2020 (Apple M1) with rustc 1.74.1 and clang 17.0.6
+Measured on MacBook Pro 13" 2020 (Apple M1) with rustc 1.74.1 and clang 17.0.6, gcc 13.2.0
 
 ### x86_64
 

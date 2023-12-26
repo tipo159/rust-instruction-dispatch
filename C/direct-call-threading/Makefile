@@ -11,7 +11,8 @@ ASM = internal_instruction.s
 ANALYZE = internal_instruction.plist
 
 CC=clang
-CFLAGS = -Wall -Ofast
+#CC=gcc-13
+CFLAGS = -Wall -O3
 
 all:	$(TARGET)
 

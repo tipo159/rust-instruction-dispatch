@@ -1,7 +1,9 @@
 #include "bytecode.h"
 #include "internal_instruction.h"
 
+#if defined(__clang__)
 #pragma clang diagnostic ignored "-Wincompatible-function-pointer-types"
+#endif
 void convert(const bytecode_t *restrict instructions,
              internal_instruction_t *internal_instructions)
 {

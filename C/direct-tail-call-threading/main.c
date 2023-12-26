@@ -14,7 +14,7 @@ int main()
         // Init loop
         MAKE_OPCODE_IMM(OP_LOAD, 0, 0),
         MAKE_OPCODE_IMM(OP_LOAD, 1, 1),
-#ifdef DEBUG
+#if defined(DEBUG)
         MAKE_OPCODE_IMM(OP_LOAD, 2, 2),
 #else
         MAKE_OPCODE_IMM(OP_LOAD, 2, 0xfffff),
@@ -30,7 +30,7 @@ int main()
 
     convert(program, internal_program);
 
-#ifndef DEBUG
+#if !defined(DEBUG)
     struct timespec ts_start, ts_end;
     long average = 0;
     for (int i = 0; i < WARMING_UP_ITERATIONS + NUM_OF_ITERATIONS; ++i)
