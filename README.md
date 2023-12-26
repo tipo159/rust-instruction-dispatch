@@ -278,6 +278,6 @@ Measured on MacBook Pro 13" 2020 (Apple M1) with rustc 1.74.1 and clang 17.0.6, 
 | Direct Threading           |  15.890  | 16,873,064 | 21,634,645 | 12,296,709 |
 | Optimized Direct Threading |  11.554  | 10,098,565 |          - |          - |
 
-Measured on DELL-inspiron 15 3000 2019 (Intel Core i7-1065G7) with rustc 1.74.1 and clang 15.0.7
+Measured on DELL-inspiron 15 3000 2019 (Intel Core i7-1065G7) with rustc 1.74.1 and clang 15.0.7, gcc 12.3.0
 
 ![x86_64 result graph](/x86_64-graph.png "Average of 100 Runs on x86_64")
