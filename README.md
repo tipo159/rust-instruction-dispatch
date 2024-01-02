@@ -260,7 +260,7 @@ Add memory location 0 by 1 from 0 to 1,048,575(0xfffff).
 | Direct Call Threading      | 7.0812 | 6,818,994 | 7,776,315 | 7,755,413 |
 | Direct Tail Call Threading | 2.4328 | 2,435,381 | 2,585,706 | 2,518,542 |
 | Direct Threading           |  -[^9] |     -[^9] | 7,228,139 | 7,588,820 |
-| Optimized Direct Threading |  -[^9] |     -[^9] |         - |         - |
+| Optimized Direct Threading |  -[^9] |     -[^9] | 7,499,937 | 7,687,219 |
 
 [^9]: compile error: invalid CFI advance_loc expression
 
@@ -275,8 +275,8 @@ Measured on MacBook Pro 13" 2020 (Apple M1) with rustc 1.75.0 and clang 17.0.6, 
 | Switch Dispatch            |   5.8429 |  5,567,571 | 23,849,510 | 13,881,652 |
 | Direct Call Threading      |   5.3217 |  5,198,761 | 19,624,856 | 19,149,867 |
 | Direct Tail Call Threading |   2.7867 |  2,642,556 |  5,581,770 |  6,873,807 |
-| Direct Threading           |  18.406  | 17,630,074 | 21,634,645 | 12,296,709 |
-| Optimized Direct Threading |  11.236  |  9,748,775 |          - |          - |
+| Direct Threading           |  15.904  | 12,973,085 | 21,634,645 | 12,296,709 |
+| Optimized Direct Threading |  11.236  |  9,748,775 |  8,621,428 |  5,080,664 |
 
 Measured on DELL-inspiron 15 3000 2019 (Intel Core i7-1065G7) with rustc 1.75.0 and clang 15.0.7, gcc 12.3.0
 
