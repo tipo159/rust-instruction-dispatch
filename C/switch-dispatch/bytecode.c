@@ -2,38 +2,38 @@
 #include <stdio.h>
 
 void vm_loop(const bytecode_t *program, const int programSize) {
-  int program_pointer = 0;
+  int program_counter = 0;
   int memory[256] = {0};
 
-  while (program_pointer < programSize) {
-    opcode_t opcode = GET_OPCODE(program[program_pointer]);
+  while (program_counter < programSize) {
+    opcode_t opcode = GET_OPCODE(program[program_counter]);
 
     switch (opcode) {
     case OP_LOAD: {
-      int destination = GET_OPERAND_A(program[program_pointer]);
-      int value = GET_OPERAND_IMM(program[program_pointer]);
+      int destination = GET_OPERAND_A(program[program_counter]);
+      int value = GET_OPERAND_IMM(program[program_counter]);
       memory[destination] = value;
     } break;
 
     case OP_ADD: {
-      int destination = GET_OPERAND_A(program[program_pointer]);
-      int operandB = memory[GET_OPERAND_B(program[program_pointer])];
-      int operandC = memory[GET_OPERAND_C(program[program_pointer])];
+      int destination = GET_OPERAND_A(program[program_counter]);
+      int operandB = memory[GET_OPERAND_B(program[program_counter])];
+      int operandC = memory[GET_OPERAND_C(program[program_counter])];
       memory[destination] = operandB + operandC;
     } break;
 
     case OP_JMPNE: {
-      int operandA = memory[GET_OPERAND_A(program[program_pointer])];
-      int operandB = memory[GET_OPERAND_B(program[program_pointer])];
-      int jumpTarget = GET_OPERAND_JMP(program[program_pointer]);
+      int operandA = memory[GET_OPERAND_A(program[program_counter])];
+      int operandB = memory[GET_OPERAND_B(program[program_counter])];
+      int jumpTarget = GET_OPERAND_JMP(program[program_counter]);
 
       if (operandA != operandB) {
-        program_pointer = jumpTarget - 1;
+        program_counter = jumpTarget - 1;
       }
     } break;
 
     case OP_PRINT: {
-      int operandA = memory[GET_OPERAND_A(program[program_pointer])];
+      int operandA = memory[GET_OPERAND_A(program[program_counter])];
       printf("%d\n", operandA);
     } break;
 
@@ -42,6 +42,6 @@ void vm_loop(const bytecode_t *program, const int programSize) {
       break;
     }
 
-    program_pointer += 1;
+    program_counter += 1;
   }
 }
