@@ -6,10 +6,9 @@
 
 void vm_loop(bytecode_t *program)
 {
-    void *dispatch_table[] = {&&do_load, &&do_add, &&do_jmpne, &&do_print,
-                              &&do_ret};
+    void *dispatch_table[] = {&&do_load, &&do_add, &&do_jmpne, &&do_print, &&do_ret};
     int memory[256] = {0};
-    int program_counter = -1;
+    int program_counter = 0;
     void *dispatch_sequence[256];
 
     for (int i = 0; ; i++) {
@@ -19,27 +18,32 @@ void vm_loop(bytecode_t *program)
         }
     }
 
-    DISPATCH();
+    goto *dispatch_sequence[program_counter];
 
 do_load:
 #if defined(DEBUG)
-    printf("%d: load memory[%d] = %d\n", program_counter, GET_OPERAND_A(program[program_counter]), GET_OPERAND_IMM(program[program_counter]));
+    printf("%d: load memory[%d] = %d\n", program_counter, GET_OPERAND_A(program[program_counter]),
+           GET_OPERAND_IMM(program[program_counter]));
 #endif
     memory[GET_OPERAND_A(program[program_counter])] = GET_OPERAND_IMM(program[program_counter]);
     DISPATCH();
 
 do_add:
 #if defined(DEBUG)
-    printf("%d: add memory[%d](%d) = memory[%d] + memory[%d]\n", program_counter, GET_OPERAND_A(program[program_counter]),
-           memory[GET_OPERAND_A(program[program_counter])], GET_OPERAND_B(program[program_counter]), GET_OPERAND_C(program[program_counter]));
+    printf("%d: add memory[%d](%d) = memory[%d] + memory[%d]\n", program_counter,
+           GET_OPERAND_A(program[program_counter]), memory[GET_OPERAND_A(program[program_counter])],
+           GET_OPERAND_B(program[program_counter]), GET_OPERAND_C(program[program_counter]));
 #endif
-    memory[GET_OPERAND_A(program[program_counter])] = memory[GET_OPERAND_B(program[program_counter])] + memory[GET_OPERAND_C(program[program_counter])];
+    memory[GET_OPERAND_A(program[program_counter])] = memory[GET_OPERAND_B(program[program_counter])] +
+        memory[GET_OPERAND_C(program[program_counter])];
     DISPATCH();
 
 do_jmpne:
 #if defined(DEBUG)
-    printf("%d: jmpne if memory[%d](%d) != memory[%d](%d) then program_counter = %d\n", program_counter, GET_OPERAND_A(program[program_counter]),
-           memory[GET_OPERAND_A(program[program_counter])], GET_OPERAND_B(program[program_counter]), memory[GET_OPERAND_B(program[program_counter])], GET_OPERAND_JMP(program[program_counter]));
+    printf("%d: jmpne if memory[%d](%d) != memory[%d](%d) then program_counter = %d\n", program_counter,
+           GET_OPERAND_A(program[program_counter]), memory[GET_OPERAND_A(program[program_counter])],
+           GET_OPERAND_B(program[program_counter]), memory[GET_OPERAND_B(program[program_counter])],
+           GET_OPERAND_JMP(program[program_counter]));
 #endif
     if (memory[GET_OPERAND_A(program[program_counter])] != memory[GET_OPERAND_B(program[program_counter])])
     {
@@ -49,7 +53,8 @@ do_jmpne:
 
 do_print:
 #if defined(DEBUG)
-    printf("%d: print memory[%d](%d)\n", program_counter, GET_OPERAND_A(program[program_counter]), memory[GET_OPERAND_A(program[program_counter])]);
+    printf("%d: print memory[%d](%d)\n", program_counter, GET_OPERAND_A(program[program_counter]),
+           memory[GET_OPERAND_A(program[program_counter])]);
 #endif
     printf("%d\n", memory[GET_OPERAND_A(program[program_counter])]);
     DISPATCH();
