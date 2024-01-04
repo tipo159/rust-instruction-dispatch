@@ -1,4 +1,4 @@
-# Rust Instruction Dispatch
+# Instruction Dispatch Techniques in Rust: Perromance Comparison and Implementation
 
 This is a project to learn how to implement instruction dispatch in Rust. Instruction dispatch is a technique for executing bytecode instructions in a language interpreter. This project compares five types of instruction dispatch:
 
@@ -18,13 +18,11 @@ This is a project to learn how to implement instruction dispatch in Rust. Instru
 
 [^2]: Peter Liniker. 2017. Virtual Machine Dispatch Experiments in Rust. Retrieved from <https://pliniker.github.io/post/dispatchers/>.
 
-In my environment (MacBook Pro 13" 2020 Apple M1), Direct Tail Call Threading was faster than Switch Dispatch.
+In my environment (MacBook Pro 13" 2020 Apple M1), Direct Tail Call Threading was fastest in Rust as well as C.
 
 ## Installation
 
 This project is written in Rust and C. To install Rust, please refer to [here](https://www.rust-lang.org/tools/install).
-
-Also, the implementations of Direct Threading and Optimized Direct Threading in Rust are for Aarch64 and x86_64. If you want to support other architectures, you need to rewrite the inline assembly in the source code.
 
 After downloading this project, build it with the following commands.
 
@@ -41,6 +39,8 @@ After downloading this project, build it with the following commands.
 ```
 
 ## Usage
+
+### Release
 
 After building, you can measure the performance of each type of instruction dispatch with the following commands.
 
@@ -70,6 +70,8 @@ Time elapsed:    3709042 ns
 Average of 100 results:    3916145 ns
 ```
 
+### Criterion
+
 Programs written in Rust can also run cargo criterion.
 
 ```console
@@ -98,6 +100,8 @@ running 7 tests
 test bytecode::test_get_opcode ... ignored
 (omitted)
 ```
+
+### Debug
 
 In addition, programs written in Rust can be run with the dev profile to output debugging information.
 
@@ -176,15 +180,17 @@ The program "threadedasm.rs " in "Virtual Machine Dispatch Experiments in Rust[^
 [^7]: Peter Liniker. 2017. Virtual Machine Dispatch Experiments in Rust. Retrieved from <https://github.com/pliniker/dispatchers>.
 [^8]: Rust RFC. 2873-inline-asm. Retrieved from <https://rust-lang.github.io/rfcs/2873-inline-asm.html>.
 
-My program is only for Aarch64. I would appreciate it if you could send me pull requests for other architectural implementations.
+This implementation is for Aarch64 and x86_64.
 
-My program runs only at opt-level 0 and is significantly slower than the -Ofast C implementation. I would appreciate it if you could send me a pull request for this as well.
+This implementation violates Rules for inline assembly, so it is not guaranteed to work; on Aarch64, it has been a compile error since 1.73.
+
+The rules for inline assembly can be found at <https://doc.rust-lang.org/reference/inline-assembly.html#rules-for-inline-assembly>.
+
+> You cannot jump from an address in one asm! block to an address in another, even within the same function or block, without treating their contexts as potentially different and requiring context switching. You cannot assume that any particular value in those contexts (e.g. current stack pointer or temporary values below the stack pointer) will remain unchanged between the two asm! blocks.
 
 ### Optimized Direct Threading
 
 In the optimized direct thread, the number of array references during bytecode execution is one less than in the direct thread.
-
-Like direct threading, my program is an Aarch64-only implementation, with the restriction that my program can only run at opt-level 0.
 
 ## Comparison of Techniques
 
@@ -254,13 +260,17 @@ Add memory location 0 by 1 from 0 to 1,048,575(0xfffff).
 
 ### Aarch64
 
+As shown in the histogram below, the "average of 100 runs" itself was run 100 times and the average of the 100 runs was used because of the large variability in the "average of 100 runs".
+
+![Histgram of Average of 100 Runs on Aarch64](/images/Histgram_C_switch-dispatch_clang.png "Histgram of Average of 100 Runs on Aarch64")
+
 | Threading Techniques | Rust criterion (ms) | Rust Average of 100 runs (ns) | C Average of 100 runs [clang] (ns) | C Average of 100 runs [gcc] (ns) |
 | :------------------------- | -----: | --------: | --------: | --------: |
-| Switch Dispatch            | 3.6830 | 3,644,041 | 8,294,589 | 7,704,200 |
-| Direct Call Threading      | 7.0812 | 6,818,994 | 7,776,315 | 7,755,413 |
-| Direct Tail Call Threading | 2.4328 | 2,435,381 | 2,585,706 | 2,518,542 |
-| Direct Threading           |  -[^9] |     -[^9] | 7,228,139 | 7,588,820 |
-| Optimized Direct Threading |  -[^9] |     -[^9] | 7,499,937 | 7,687,219 |
+| Switch Dispatch            | 3.6830 | 4,143,163 | 7,715,544 | 7,310,480 |
+| Direct Call Threading      | 7.0812 | 7,662,319 | 7,369,473 | 7,792,405 |
+| Direct Tail Call Threading | 2.4328 | 2,915,585 | 2,595,484 | 2,628,751 |
+| Direct Threading           |  -[^9] |     -[^9] | 6,785,416 | 7,600,264 |
+| Optimized Direct Threading |  -[^9] |     -[^9] | 8,138,738 | 8,661,533 |
 
 [^9]: compile error: invalid CFI advance_loc expression
 
@@ -271,12 +281,12 @@ Measured on MacBook Pro 13" 2020 (Apple M1) with rustc 1.75.0 and clang 17.0.6, 
 ### x86_64
 
 | Threading Techniques | Rust criterion (ms) | Rust Average of 100 runs (ns) | C Average of 100 runs [clang] (ns) | C Average of 100 runs [gcc] (ns) |
-| :------------------------- | -------: | ---------: | ---------: | ---------: |
-| Switch Dispatch            |   5.8429 |  5,567,571 | 23,849,510 | 13,881,652 |
-| Direct Call Threading      |   5.3217 |  5,198,761 | 19,624,856 | 19,149,867 |
-| Direct Tail Call Threading |   2.7867 |  2,642,556 |  5,581,770 |  6,873,807 |
-| Direct Threading           |  15.904  | 12,973,085 | 21,634,645 | 12,296,709 |
-| Optimized Direct Threading |  11.236  |  9,748,775 |  8,621,428 |  5,080,664 |
+| :------------------------- | -------: | ---------: | ---------: | --------: |
+| Switch Dispatch            |   5.8429 |  7,532,683 | 9,584,538 | 5,502,122 |
+| Direct Call Threading      |   5.3217 |  6,331,505 | 7,895,659 | 8,101,852 |
+| Direct Tail Call Threading |   2.7867 |  2,962,902 | 3,231,800 | 3,259,439 |
+| Direct Threading           |  15.904  | 23,352,383 | 9,058,230 | 5,331,247 |
+| Optimized Direct Threading |  11.236  | 12,986,058 | 9,162,072 | 5,387,817 |
 
 Measured on DELL-inspiron 15 3000 2019 (Intel Core i7-1065G7) with rustc 1.75.0 and clang 15.0.7, gcc 12.3.0
 
