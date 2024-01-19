@@ -280,7 +280,7 @@ Measured on MacBook Pro 13" 2020 (Apple M1) with rustc 1.75.0 and clang 17.0.6, 
 
 ### x86_64
 
-| Threading Techniques | Rust criterion (ms) | Rust Average of 100 runs (ns) | C Average of 100 runs [clang] (ns) | C Average of 100 runs [gcc] (ns) |
+| Threading Techniques | Rust criterion (ms) | Rust Average of 10,000 runs (ns) | C Average of 10,000 runs [clang] (ns) | C Average of 10,000 runs [gcc] (ns) |
 | :------------------------- | -------: | ---------: | ---------: | --------: |
 | Switch Dispatch            |   5.8429 |  7,532,683 | 9,584,538 | 5,502,122 |
 | Direct Call Threading      |   5.3217 |  6,331,505 | 7,895,659 | 8,101,852 |
