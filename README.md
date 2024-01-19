@@ -1,4 +1,4 @@
-# Instruction Dispatch Techniques in Rust: Perromance Comparison and Implementation
+# Instruction Dispatch Techniques in Rust: Perfomance Comparison and Implementation
 
 This is a project to learn how to implement instruction dispatch in Rust. Instruction dispatch is a technique for executing bytecode instructions in a language interpreter. This project compares five types of instruction dispatch:
 
@@ -264,7 +264,7 @@ As shown in the histogram below, the "average of 100 runs" itself was run 100 ti
 
 ![Histgram of Average of 100 Runs on Aarch64](/images/Histgram_C_switch-dispatch_clang.png "Histgram of Average of 100 Runs on Aarch64")
 
-| Threading Techniques | Rust criterion (ms) | Rust Average of 100 runs (ns) | C Average of 100 runs [clang] (ns) | C Average of 100 runs [gcc] (ns) |
+| Threading Techniques | Rust criterion (ms) | Rust Average of 10,000 runs (ns) | C Average of 10,000 runs [clang] (ns) | C Average of 10,000 runs [gcc] (ns) |
 | :------------------------- | -----: | --------: | --------: | --------: |
 | Switch Dispatch            | 3.6830 | 4,143,163 | 7,715,544 | 7,310,480 |
 | Direct Call Threading      | 7.0812 | 7,662,319 | 7,369,473 | 7,792,405 |
@@ -276,7 +276,7 @@ As shown in the histogram below, the "average of 100 runs" itself was run 100 ti
 
 Measured on MacBook Pro 13" 2020 (Apple M1) with rustc 1.75.0 and clang 17.0.6, gcc 13.2.0
 
-![Aarch64 result graph](/images/Arch64-graph.png "Average of 100 Runs on Aarch64")
+![Aarch64 result graph](/images/Arch64-graph.png "Average of 10,000 Runs on Aarch64")
 
 ### x86_64
 
@@ -290,4 +290,4 @@ Measured on MacBook Pro 13" 2020 (Apple M1) with rustc 1.75.0 and clang 17.0.6, 
 
 Measured on DELL-inspiron 15 3000 2019 (Intel Core i7-1065G7) with rustc 1.75.0 and clang 15.0.7, gcc 12.3.0
 
-![x86_64 result graph](/images/x86_64-graph.png "Average of 100 Runs on x86_64")
+![x86_64 result graph](/images/x86_64-graph.png "Average of 10,000 Runs on x86_64")
