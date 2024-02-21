@@ -260,34 +260,34 @@ Add memory location 0 by 1 from 0 to 1,048,575(0xfffff).
 
 ### Aarch64
 
-As shown in the histogram below, the "average of 100 runs" itself was run 100 times and the average of the 100 runs was used because of the large variability in the "average of 100 runs".
-
-![Histgram of Average of 100 Runs on Aarch64](/images/Histgram_C_switch-dispatch_clang.png "Histgram of Average of 100 Runs on Aarch64")
-
 | Threading Techniques | Rust criterion (ms) | Rust Average of 10,000 runs (ns) | C Average of 10,000 runs [clang] (ns) | C Average of 10,000 runs [gcc] (ns) |
 | :------------------------- | -----: | --------: | --------: | --------: |
-| Switch Dispatch            | 3.6830 | 4,143,163 | 7,715,544 | 7,310,480 |
-| Direct Call Threading      | 7.0812 | 7,662,319 | 7,369,473 | 7,792,405 |
-| Direct Tail Call Threading | 2.4328 | 2,915,585 | 2,595,484 | 2,628,751 |
+| Switch Dispatch            | 3.6246 | 4,350,899 | 7,715,544 | 7,310,480 |
+| Direct Call Threading      | 6,7756 | 7,013,114 | 7,369,473 | 7,792,405 |
+| Direct Tail Call Threading | 2.3768 | 2,486,075 | 2,595,484 | 2,628,751 |
 | Direct Threading           |  -[^9] |     -[^9] | 6,785,416 | 7,600,264 |
 | Optimized Direct Threading |  -[^9] |     -[^9] | 8,138,738 | 8,661,533 |
 
 [^9]: compile error: invalid CFI advance_loc expression
 
-Measured on MacBook Pro 13" 2020 (Apple M1) with rustc 1.75.0 and clang 17.0.6, gcc 13.2.0
+Measured on MacBook Pro 13" 2020 (Apple M1) with rustc 1.76.0 and clang 17.0.6, gcc 13.2.0
 
-![Aarch64 result graph](/images/Arch64-graph.png "Average of 10,000 Runs on Aarch64")
+![Aarch64 result graph](/images/1.76.0/Arch64-graph.png "Average of 10,000 Runs on Aarch64")
 
 ### x86_64
 
 | Threading Techniques | Rust criterion (ms) | Rust Average of 10,000 runs (ns) | C Average of 10,000 runs [clang] (ns) | C Average of 10,000 runs [gcc] (ns) |
 | :------------------------- | -------: | ---------: | ---------: | --------: |
-| Switch Dispatch            |   5.8429 |  7,532,683 | 9,584,538 | 5,502,122 |
-| Direct Call Threading      |   5.3217 |  6,331,505 | 7,895,659 | 8,101,852 |
-| Direct Tail Call Threading |   2.7867 |  2,962,902 | 3,231,800 | 3,259,439 |
-| Direct Threading           |  15.904  | 23,352,383 | 9,058,230 | 5,331,247 |
-| Optimized Direct Threading |  11.236  | 12,986,058 | 9,162,072 | 5,387,817 |
+| Switch Dispatch            |   6.6536 |  7,589,219 | 9,584,538 | 5,502,122 |
+| Direct Call Threading      |   6.0238 |  7,192,734 | 7,895,659 | 8,101,852 |
+| Direct Tail Call Threading |   3.3436 |  3,578,280 | 3,231,800 | 3,259,439 |
+| Direct Threading           |  23.413  | 24,159,814 | 9,058,230 | 5,331,247 |
+| Optimized Direct Threading |  13.661  | 14,572,152 | 9,162,072 | 5,387,817 |
 
-Measured on DELL-inspiron 15 3000 2019 (Intel Core i7-1065G7) with rustc 1.75.0 and clang 15.0.7, gcc 12.3.0
+Measured on DELL-inspiron 15 3000 2019 (Intel Core i7-1065G7) with rustc 1.76.0 and clang 15.0.7, gcc 12.3.0
 
-![x86_64 result graph](/images/x86_64-graph.png "Average of 10,000 Runs on x86_64")
+![x86_64 result graph](/images/1.76.0/x86_64-graph.png "Average of 10,000 Runs on x86_64")
+
+## Previous Results
+
+### [1.75.0](1.75.0.md)
