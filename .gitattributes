@@ -1,0 +1,4 @@
+C/direct-threading/*.s linguist-documentation
+C/direct-tail-call-threading/*.s linguist-documentation
+Rust/direct-tail-call-threading/*.s linguist-documentation
+Rust/direct-tail-call-threading/*.ll linguist-documentation
